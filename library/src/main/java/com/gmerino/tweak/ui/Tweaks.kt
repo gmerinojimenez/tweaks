@@ -5,14 +5,17 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.gmerino.tweak.domain.TweakCategory
 import com.gmerino.tweak.domain.TweakEntry
 import com.gmerino.tweak.domain.TweakGroup
 import com.gmerino.tweak.domain.TweaksGraph
+import com.gmerino.tweak.ui.TweakEntryViewModel
 
 @Composable
 fun TweaksScreen(
@@ -74,10 +77,18 @@ fun TweakGroupBody(
 }
 
 @Composable
-fun TweakEntryBody(entry: TweakEntry<*>) {
+fun TweakEntryBody(
+    entry: TweakEntry<*>,
+    tweakRowViewModel: TweakEntryViewModel = hiltViewModel()
+) {
     Row {
         Text(text = entry.descriptiveName)
-        Text(text = entry.key)
+        val value: Any? =
+            tweakRowViewModel.getValue(entry.key).collectAsState(initial = entry.defaultValue).value
+        Text(text = value as String? ?: "null")
+        Button(onClick = { tweakRowViewModel.setValue(entry.key, "$value+1")}) {
+
+        }
     }
 }
 

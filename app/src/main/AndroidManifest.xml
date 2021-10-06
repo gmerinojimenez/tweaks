@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name=".TweakDemoApplication"
         android:theme="@style/Theme.DebugSettings">
         <activity
             android:name="com.gmerino.debug_tweaks.MainActivity"
