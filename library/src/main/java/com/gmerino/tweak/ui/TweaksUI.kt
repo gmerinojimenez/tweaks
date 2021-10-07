@@ -9,12 +9,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gmerino.tweak.domain.TweakCategory
-import com.gmerino.tweak.domain.TweakEntry
-import com.gmerino.tweak.domain.TweakGroup
-import com.gmerino.tweak.domain.TweaksGraph
+import com.gmerino.tweak.domain.*
 
 @Composable
 fun TweaksScreen(
@@ -69,31 +65,85 @@ fun TweakGroupBody(
         ) {
             Text(tweakGroup.title)
             tweakGroup.entries.forEach { entry ->
-                TweakEntryBody(entry)
+                when (entry) {
+                    is StringTweakEntry -> StringTweakEntryBody(entry = entry)
+                    is BooleanTweakEntry -> BooleanTweakEntryBody(entry = entry)
+                    is IntTweakEntry -> IntTweakEntryBody(entry = entry)
+                    is LongTweakEntry -> LongTweakEntryBody(entry = entry)
+                }
             }
         }
     }
 }
 
 @Composable
-fun TweakEntryBody(
-    entry: TweakEntry<*>,
-    tweakRowViewModel: TweakEntryViewModel = TweakEntryViewModel()
+fun StringTweakEntryBody(
+    entry: StringTweakEntry,
+    tweakRowViewModel: StringTweakViewModel = StringTweakViewModel()
 ) {
     Row {
-        Text(text = entry.descriptiveName)
+        Text(text = entry.name)
         val context = LocalContext.current
-        val value: Any? =
-            tweakRowViewModel.getStringValue(context, entry.key).collectAsState(initial = entry.defaultValue).value
-        Text(text = value as String? ?: "null")
-        Button(onClick = { tweakRowViewModel.setStringValue(context, entry.key, "$value+1")}) {
-
+        val value: String? =
+            tweakRowViewModel.getValue(context, entry.key).collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
+        Text(text = "$value")
+        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1")}) {
         }
     }
 }
 
-@Preview
 @Composable
-fun TweakGroupBodyPreview() {
-    TweakGroupBody(tweakGroup = TweakGroup("Test", listOf(TweakEntry("value", "description", "1"))))
+fun BooleanTweakEntryBody(
+    entry: BooleanTweakEntry,
+    tweakRowViewModel: BooleanTweakViewModel = BooleanTweakViewModel()
+) {
+    Row {
+        Text(text = entry.name)
+        val context = LocalContext.current
+        val value: Boolean? =
+            tweakRowViewModel.getValue(context, entry.key).collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
+        Text(text = "$value")
+        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1")}) {
+        }
+    }
 }
+
+@Composable
+fun IntTweakEntryBody(
+    entry: IntTweakEntry,
+    tweakRowViewModel: IntTweakViewModel = IntTweakViewModel()
+) {
+    Row {
+        Text(text = entry.name)
+        val context = LocalContext.current
+        val value: Int? =
+            tweakRowViewModel.getValue(context, entry.key).collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
+        Text(text = "$value")
+        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1")}) {
+        }
+    }
+}
+
+@Composable
+fun LongTweakEntryBody(
+    entry: LongTweakEntry,
+    tweakRowViewModel: LongTweakViewModel = LongTweakViewModel()
+) {
+    Row {
+        Text(text = entry.name)
+        val context = LocalContext.current
+        val value: Any? =
+            tweakRowViewModel.getValue(context, entry.key).collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
+        Text(text = "$value")
+        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1")}) {
+        }
+    }
+}
+
+
+//
+//@Preview
+//@Composable
+//fun TweakGroupBodyPreview() {
+//    TweakGroupBody(tweakGroup = TweakGroup("Test", listOf(TweakEntry("value", "description", "1"))))
+//}
