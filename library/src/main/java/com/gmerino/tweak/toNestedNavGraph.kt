@@ -1,4 +1,4 @@
-package com.gmerino.tweak.domain
+package com.gmerino.tweak
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -7,6 +7,8 @@ import androidx.navigation.navigation
 import com.gmerino.tweak.ui.TweaksCategoryScreen
 import com.gmerino.tweak.ui.TweaksScreen
 import com.gmerino.tweak.domain.Constants.TWEAKS_NAVIGATION_ENTRYPOINT
+import com.gmerino.tweak.domain.TweakCategory
+import com.gmerino.tweak.domain.TweaksGraph
 
 fun NavGraphBuilder.addTweakGraph(
     tweaksGraph: TweaksGraph,

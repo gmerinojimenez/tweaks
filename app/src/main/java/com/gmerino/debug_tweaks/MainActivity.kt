@@ -13,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gmerino.debug_tweaks.ui.theme.DebugTweaksTheme
+import com.gmerino.tweak.addTweakGraph
 import com.gmerino.tweak.domain.*
 import dagger.hilt.android.AndroidEntryPoint
 
