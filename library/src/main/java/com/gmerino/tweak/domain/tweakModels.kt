@@ -7,4 +7,5 @@ data class TweakEntry<T>(val key: String, val descriptiveName: String, val value
 
 internal object Constants {
     const val TWEAKS_NAVIGATION_ENTRYPOINT = "tweaks"
+    const val TWEAK_MAIN_SCREEN = "tweaks-main-screen"
 }
