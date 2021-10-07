@@ -1,4 +1,4 @@
-package com.gmerino.tweak
+package com.gmerino.tweak.ui
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -15,7 +15,6 @@ import com.gmerino.tweak.domain.TweakCategory
 import com.gmerino.tweak.domain.TweakEntry
 import com.gmerino.tweak.domain.TweakGroup
 import com.gmerino.tweak.domain.TweaksGraph
-import com.gmerino.tweak.ui.TweakEntryViewModel
 
 @Composable
 fun TweaksScreen(

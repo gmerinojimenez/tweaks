@@ -4,8 +4,8 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.gmerino.tweak.TweaksCategoryScreen
-import com.gmerino.tweak.TweaksScreen
+import com.gmerino.tweak.ui.TweaksCategoryScreen
+import com.gmerino.tweak.ui.TweaksScreen
 import com.gmerino.tweak.domain.Constants.TWEAKS_NAVIGATION_ENTRYPOINT
 
 fun NavGraphBuilder.addTweakGraph(
