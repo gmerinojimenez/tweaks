@@ -8,9 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.gmerino.tweak.domain.TweakCategory
 import com.gmerino.tweak.domain.TweakEntry
 import com.gmerino.tweak.domain.TweakGroup
@@ -78,14 +78,15 @@ fun TweakGroupBody(
 @Composable
 fun TweakEntryBody(
     entry: TweakEntry<*>,
-    tweakRowViewModel: TweakEntryViewModel = hiltViewModel()
+    tweakRowViewModel: TweakEntryViewModel = TweakEntryViewModel()
 ) {
     Row {
         Text(text = entry.descriptiveName)
+        val context = LocalContext.current
         val value: Any? =
-            tweakRowViewModel.getValue(entry.key).collectAsState(initial = entry.defaultValue).value
+            tweakRowViewModel.getStringValue(context, entry.key).collectAsState(initial = entry.defaultValue).value
         Text(text = value as String? ?: "null")
-        Button(onClick = { tweakRowViewModel.setValue(entry.key, "$value+1")}) {
+        Button(onClick = { tweakRowViewModel.setStringValue(context, entry.key, "$value+1")}) {
 
         }
     }

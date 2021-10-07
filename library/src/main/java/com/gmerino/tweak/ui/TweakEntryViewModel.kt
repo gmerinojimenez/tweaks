@@ -1,25 +1,32 @@
 package com.gmerino.tweak.ui
 
+import android.content.Context
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gmerino.tweak.GetTweaksData
-import com.gmerino.tweak.domain.SetTweakData
-import dagger.hilt.android.lifecycle.HiltViewModel
+import com.gmerino.tweak.data.tweaksDataStore
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class TweakEntryViewModel @Inject constructor(
-    private val getTweaksData: GetTweaksData,
-    private val setTweakData: SetTweakData,
-): ViewModel() {
+class TweakEntryViewModel : ViewModel() {
 
-    fun getValue(key: String): Flow<String?> = getTweaksData(stringPreferencesKey(key))
-    fun setValue(key: String, value: String?) {
+    fun getStringValue(context: Context, key: String): Flow<String?> = context.tweaksDataStore.data
+        .map { preferences -> preferences[stringPreferencesKey(key)] }
+
+    fun setStringValue(context: Context, key: String, value: String) {
         viewModelScope.launch {
-            setTweakData(stringPreferencesKey(key), value!!)
+            context.tweaksDataStore.edit {
+                it[stringPreferencesKey(key)] = value!!
+            }
+        }
+    }
+
+    fun clearStringValue(context: Context, key: String, value: String) {
+        viewModelScope.launch {
+            context.tweaksDataStore.edit { it.remove(stringPreferencesKey(key)) }
         }
     }
 }
