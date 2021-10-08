@@ -17,12 +17,12 @@ abstract class TweakEntryViewModel<T> : ViewModel() {
     fun setValue(context: Context, key: String, value: String) {
         viewModelScope.launch {
             context.tweaksDataStore.edit {
-                it[stringPreferencesKey(key)] = value!!
+                it[stringPreferencesKey(key)] = value
             }
         }
     }
 
-    fun clearValue(context: Context, key: String, value: String) {
+    fun clearValue(context: Context, key: String) {
         viewModelScope.launch {
             context.tweaksDataStore.edit { it.remove(stringPreferencesKey(key)) }
         }
