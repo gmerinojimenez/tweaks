@@ -13,15 +13,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gmerino.tweak.domain.*
 
 @Composable
@@ -73,15 +70,17 @@ fun TweakGroupBody(
         elevation = 3.dp
     ) {
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(tweakGroup.title, style = MaterialTheme.typography.h5)
+            Divider(thickness = 2.dp)
             tweakGroup.entries.forEach { entry ->
                 when (entry) {
-                    is StringTweakEntry -> StringTweakEntryBody(entry = entry)
-                    is BooleanTweakEntry -> BooleanTweakEntryBody(entry = entry)
-                    is IntTweakEntry -> IntTweakEntryBody(entry = entry)
-                    is LongTweakEntry -> LongTweakEntryBody(entry = entry)
+                    is EditableStringTweakEntry -> EditableStringTweakEntryBody(entry = entry)
+                    is EditableBooleanTweakEntry -> EditableBooleanTweakEntryBody(entry = entry)
+                    is EditableIntTweakEntry -> EditableIntTweakEntryBody(entry = entry)
+                    is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry = entry)
                 }
             }
         }
@@ -89,41 +88,34 @@ fun TweakGroupBody(
 }
 
 
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun StringTweakEntryBody(
-    entry: StringTweakEntry,
+fun EditableStringTweakEntryBody(
+    entry: EditableStringTweakEntry,
     tweakRowViewModel: StringTweakViewModel = StringTweakViewModel()
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val value: String? =
-        tweakRowViewModel.getValue(context, entry.key)
-            .collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
+    val value: String? by tweakRowViewModel
+        .getValue(context, entry.key)
+        .collectAsState(initial = null)
     var inEditionMode by remember { mutableStateOf(false) }
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .combinedClickable(
-                onClick = {
-                    Toast
-                        .makeText(context, "Current value is $value", Toast.LENGTH_LONG)
-                        .show()
-                },
-                onLongClick = {
-                    inEditionMode = true
-                }
-            )
-    ) {
-        Text(text = entry.name, style = MaterialTheme.typography.h6)
+    TweakRow(
+        tweakEntry = entry,
+        onClick = {
+            Toast
+                .makeText(context, "Current value is $value", Toast.LENGTH_LONG)
+                .show()
+        },
+        onLongClick = {
+            inEditionMode = true
+        }) {
+
         if (inEditionMode) {
             TextField(
                 modifier = Modifier.weight(100F, true),
                 value = value ?: "",
-                onValueChange = { tweakRowViewModel.setValue(context, entry.key, it)},
+                onValueChange = { tweakRowViewModel.setValue(context, entry, it) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = {
@@ -131,7 +123,11 @@ fun StringTweakEntryBody(
                     keyboardController?.hide()
                 }),
             )
-            IconButton(onClick = { tweakRowViewModel.clearValue(context, entry.key) }) {
+            IconButton(onClick = {
+                tweakRowViewModel.clearValue(context, entry)
+                inEditionMode = false
+                keyboardController?.hide()
+            }) {
                 Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
             }
         } else {
@@ -143,74 +139,80 @@ fun StringTweakEntryBody(
     }
 }
 
+@Composable
+fun EditableBooleanTweakEntryBody(
+    entry: EditableBooleanTweakEntry,
+    tweakRowViewModel: BooleanTweakViewModel = BooleanTweakViewModel()
+) {
+    val context = LocalContext.current
+    val value by tweakRowViewModel
+        .getValue(context, entry.key)
+        .collectAsState(initial = false)
+    TweakRow(
+        tweakEntry = entry,
+        onClick = {
+            Toast
+                .makeText(context, "Current value is $entry.", Toast.LENGTH_LONG)
+                .show()
+        }) {
+        Checkbox(checked = value ?: false, onCheckedChange = {
+            tweakRowViewModel.setValue(context, entry, it)
+        })
+    }
+}
+
+@Composable
+fun EditableIntTweakEntryBody(
+    entry: EditableIntTweakEntry,
+    tweakRowViewModel: IntTweakViewModel = IntTweakViewModel()
+) {
+
+}
+
+@Composable
+fun EditableLongTweakEntryBody(
+    entry: EditableLongTweakEntry,
+    tweakRowViewModel: LongTweakViewModel = LongTweakViewModel()
+) {
+
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TweakRow(
+    tweakEntry: TweakEntry<*>,
+    onClick: (() -> Unit),
+    onLongClick: (() -> Unit)? = null,
+    content: @Composable RowScope.() -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(4.dp)
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick
+            )
+    ) {
+        TweakNameText(entry = tweakEntry)
+        content()
+    }
+}
+
+@Composable
+private fun TweakNameText(entry: TweakEntry<*>) {
+    Text(text = entry.name, style = MaterialTheme.typography.body1)
+}
+
 @Preview
 @Composable
 fun StringTweakEntryPreview() {
-    StringTweakEntryBody(
-        StringTweakEntry(
+    EditableStringTweakEntryBody(
+        EditableStringTweakEntry(
             key = "key",
             name = "Example",
-            defaultValue = "default"
         )
     )
-
 }
-
-@Composable
-fun BooleanTweakEntryBody(
-    entry: BooleanTweakEntry,
-    tweakRowViewModel: BooleanTweakViewModel = BooleanTweakViewModel()
-) {
-    Row {
-        Text(text = entry.name)
-        val context = LocalContext.current
-        val value: Boolean? =
-            tweakRowViewModel.getValue(context, entry.key)
-                .collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
-        Text(text = "$value")
-        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1") }) {
-        }
-    }
-}
-
-@Composable
-fun IntTweakEntryBody(
-    entry: IntTweakEntry,
-    tweakRowViewModel: IntTweakViewModel = IntTweakViewModel()
-) {
-    Row {
-        Text(text = entry.name)
-        val context = LocalContext.current
-        val value: Int? =
-            tweakRowViewModel.getValue(context, entry.key)
-                .collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
-        Text(text = "$value")
-        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1") }) {
-        }
-    }
-}
-
-@Composable
-fun LongTweakEntryBody(
-    entry: LongTweakEntry,
-    tweakRowViewModel: LongTweakViewModel = LongTweakViewModel()
-) {
-    Row {
-        Text(text = entry.name)
-        val context = LocalContext.current
-        val value: Any? =
-            tweakRowViewModel.getValue(context, entry.key)
-                .collectAsState(initial = entry.defaultValue).value ?: entry.defaultValue
-        Text(text = "$value")
-        Button(onClick = { tweakRowViewModel.setValue(context, entry.key, "$value+1") }) {
-        }
-    }
-}
-
-
-//
-//@Preview
-//@Composable
-//fun TweakGroupBodyPreview() {
-//    TweakGroupBody(tweakGroup = TweakGroup("Test", listOf(TweakEntry("value", "description", "1"))))
-//}

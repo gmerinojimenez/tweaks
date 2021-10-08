@@ -63,19 +63,19 @@ class MainActivity : ComponentActivity() {
                 "Screen 1", listOf(
                     TweakGroup(
                         "Group 1", listOf(
-                            StringTweakEntry(
+                            EditableStringTweakEntry(
                                 key = "value1",
                                 name = "Value 1",
                             ),
-                            BooleanTweakEntry(
+                            EditableBooleanTweakEntry(
                                 key = "value2",
                                 name = "Value 2",
                             ),
-                            IntTweakEntry(
+                            EditableIntTweakEntry(
                                 key = "value3",
                                 name = "Value 3",
                             ),
-                            LongTweakEntry(
+                            EditableLongTweakEntry(
                                 key = "value4",
                                 name = "Value 4",
                             )
