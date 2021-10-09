@@ -36,8 +36,14 @@ class TweaksBusinessLogic @Inject constructor(
     fun <T> getValue(key: String): Flow<T?> = tweaksDataStore.data
         .map { preferences -> preferences[buildKey<T>(keyToEntryValueMap[key] as TweakEntry<T>)] }
 
-    fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = tweaksDataStore.data
-        .map { preferences -> preferences[buildKey(entry)] }
+    fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
+        is ReadOnly<*> -> (entry as ReadOnly<T>).value()
+        is Editable -> getFromStorage(entry)
+    }
+
+    private fun <T> getFromStorage(entry: TweakEntry<T>) =
+        tweaksDataStore.data
+            .map { preferences -> preferences[buildKey(entry)] }
 
     suspend fun <T> setValue(entry: TweakEntry<T>, value: T) {
         tweaksDataStore.edit {
@@ -53,6 +59,7 @@ class TweaksBusinessLogic @Inject constructor(
 
     @Suppress("UNCHECKED_CAST")
     private fun <T> buildKey(entry: TweakEntry<T>): Preferences.Key<T> = when (entry) {
+        is ReadOnlyStringTweakEntry -> stringPreferencesKey(entry.key) as Preferences.Key<T>
         is EditableStringTweakEntry -> stringPreferencesKey(entry.key) as Preferences.Key<T>
         is EditableBooleanTweakEntry -> booleanPreferencesKey(entry.key) as Preferences.Key<T>
         is EditableIntTweakEntry -> intPreferencesKey(entry.key) as Preferences.Key<T>

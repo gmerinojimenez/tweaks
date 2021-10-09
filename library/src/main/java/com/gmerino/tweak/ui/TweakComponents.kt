@@ -84,9 +84,33 @@ fun TweakGroupBody(
                     is EditableBooleanTweakEntry -> EditableBooleanTweakEntryBody(entry = entry)
                     is EditableIntTweakEntry -> EditableIntTweakEntryBody(entry = entry)
                     is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry = entry)
+                    is ReadOnlyStringTweakEntry -> ReadOnlyStringTweakEntryBody(entry = entry)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun ReadOnlyStringTweakEntryBody(
+    entry: ReadOnlyStringTweakEntry,
+    tweakRowViewModel: ReadOnlyTweakEntryViewModel<String> = ReadOnlyTweakEntryViewModel()
+) {
+    val context = LocalContext.current
+    val value by tweakRowViewModel
+        .getValue(entry)
+        .collectAsState(initial = false)
+    TweakRow(
+        tweakEntry = entry,
+        onClick = {
+            Toast
+                .makeText(context, "Current value is $entry.", Toast.LENGTH_LONG)
+                .show()
+        }) {
+        Text(
+            text = "$value",
+            fontFamily = FontFamily.Monospace,
+        )
     }
 }
 
@@ -95,7 +119,7 @@ fun TweakGroupBody(
 @Composable
 fun EditableStringTweakEntryBody(
     entry: EditableStringTweakEntry,
-    tweakRowViewModel: TweakEntryViewModel<String> = TweakEntryViewModel()
+    tweakRowViewModel: EditableTweakEntryViewModel<String> = EditableTweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -115,7 +139,7 @@ fun EditableStringTweakEntryBody(
 @Composable
 fun EditableBooleanTweakEntryBody(
     entry: EditableBooleanTweakEntry,
-    tweakRowViewModel: TweakEntryViewModel<Boolean> = TweakEntryViewModel()
+    tweakRowViewModel: EditableTweakEntryViewModel<Boolean> = EditableTweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val value by tweakRowViewModel
@@ -138,7 +162,7 @@ fun EditableBooleanTweakEntryBody(
 @Composable
 fun EditableIntTweakEntryBody(
     entry: EditableIntTweakEntry,
-    tweakRowViewModel: TweakEntryViewModel<Int> = TweakEntryViewModel()
+    tweakRowViewModel: EditableTweakEntryViewModel<Int> = EditableTweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -163,7 +187,7 @@ fun EditableIntTweakEntryBody(
 @Composable
 fun EditableLongTweakEntryBody(
     entry: EditableLongTweakEntry,
-    tweakRowViewModel: TweakEntryViewModel<Long> = TweakEntryViewModel()
+    tweakRowViewModel: EditableTweakEntryViewModel<Long> = EditableTweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -214,7 +238,7 @@ private fun <T> TweakRowWithEditableTextField(
     entry: TweakEntry<T>,
     context: Context,
     value: T?,
-    tweakRowViewModel: TweakEntryViewModel<T>,
+    tweakRowViewModel: EditableTweakEntryViewModel<T>,
     keyboardController: SoftwareKeyboardController?,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     onTextFieldValueChanged: (String) -> Unit,

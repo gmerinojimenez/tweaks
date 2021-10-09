@@ -17,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.gmerino.debug_tweaks.ui.theme.DebugTweaksTheme
 import com.gmerino.tweak.addTweakGraph
 import com.gmerino.tweak.domain.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,17 @@ class MainActivity : ComponentActivity() {
                 "Screen 1", listOf(
                     TweakGroup(
                         "Group 1", listOf(
+                            ReadOnlyStringTweakEntry(
+                                key = "timestamp",
+                                name = "Current timestamp",
+                            ) {
+                                flow {
+                                    while (true) {
+                                        emit("System.currentTimeMillis() / 1000")
+                                        delay(1000)
+                                    }
+                                }
+                            },
                             EditableStringTweakEntry(
                                 key = "value1",
                                 name = "Value 1",

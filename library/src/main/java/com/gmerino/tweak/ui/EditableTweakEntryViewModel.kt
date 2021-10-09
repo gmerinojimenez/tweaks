@@ -8,7 +8,7 @@ import com.gmerino.tweak.domain.TweaksBusinessLogic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class TweakEntryViewModel<T>(
+class EditableTweakEntryViewModel<T>(
     private val tweaksBusinessLogic: TweaksBusinessLogic = Tweaks.getReference().tweaksBusinessLogic
 ) : ViewModel() {
 
