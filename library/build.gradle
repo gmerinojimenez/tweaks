@@ -39,6 +39,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -52,9 +53,14 @@ dependencies {
 
     implementation "androidx.datastore:datastore-preferences:1.0.0"
 
-    implementation "androidx.navigation:navigation-compose:2.4.0-alpha10"
+    //Dagger
+    implementation "com.google.dagger:dagger:$dagger_version"
+    implementation "com.google.dagger:dagger-android:$dagger_version"
+    implementation "com.google.dagger:dagger-android-support:$dagger_version"
+    kapt "com.google.dagger:dagger-compiler:$dagger_version"
+    kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
-    implementation "javax.inject:javax.inject:1"
+    implementation "androidx.navigation:navigation-compose:2.4.0-alpha10"
 
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
