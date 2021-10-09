@@ -1,5 +1,6 @@
 package com.gmerino.tweak.ui
 
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
@@ -15,8 +16,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gmerino.tweak.domain.*
@@ -99,44 +102,14 @@ fun EditableStringTweakEntryBody(
     val value: String? by tweakRowViewModel
         .getValue(entry)
         .collectAsState(initial = null)
-    var inEditionMode by remember { mutableStateOf(false) }
-    TweakRow(
-        tweakEntry = entry,
-        onClick = {
-            Toast
-                .makeText(context, "Current value is $value", Toast.LENGTH_LONG)
-                .show()
-        },
-        onLongClick = {
-            inEditionMode = true
-        }) {
-
-        if (inEditionMode) {
-            TextField(
-                modifier = Modifier.weight(100F, true),
-                value = value ?: "",
-                onValueChange = { tweakRowViewModel.setValue(entry, it) },
-                maxLines = 1,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = {
-                    inEditionMode = false
-                    keyboardController?.hide()
-                }),
-            )
-            IconButton(onClick = {
-                tweakRowViewModel.clearValue(entry)
-                inEditionMode = false
-                keyboardController?.hide()
-            }) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
-            }
-        } else {
-            Text(
-                text = "$value",
-                fontFamily = FontFamily.Monospace,
-            )
-        }
-    }
+    TweakRowWithEditableTextField(
+        entry,
+        context,
+        value,
+        tweakRowViewModel,
+        keyboardController,
+        onTextFieldValueChanged = { tweakRowViewModel.setValue(entry, it) }
+    )
 }
 
 @Composable
@@ -161,20 +134,54 @@ fun EditableBooleanTweakEntryBody(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun EditableIntTweakEntryBody(
     entry: EditableIntTweakEntry,
     tweakRowViewModel: TweakEntryViewModel<Int> = TweakEntryViewModel()
 ) {
-
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val value: Int? by tweakRowViewModel
+        .getValue(entry)
+        .collectAsState(initial = null)
+    TweakRowWithEditableTextField(
+        entry,
+        context,
+        value,
+        tweakRowViewModel,
+        keyboardController,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        onTextFieldValueChanged = {
+            val newValue = it.toIntOrNull() ?: 0
+            tweakRowViewModel.setValue(entry, newValue)
+        }
+    )
 }
 
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun EditableLongTweakEntryBody(
     entry: EditableLongTweakEntry,
     tweakRowViewModel: TweakEntryViewModel<Long> = TweakEntryViewModel()
 ) {
-
+    val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val value: Long? by tweakRowViewModel
+        .getValue(entry)
+        .collectAsState(initial = null)
+    TweakRowWithEditableTextField(
+        entry,
+        context,
+        value,
+        tweakRowViewModel,
+        keyboardController,
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+        onTextFieldValueChanged = {
+            val newValue = it.toLongOrNull() ?: 0
+            tweakRowViewModel.setValue(entry, newValue)
+        }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -198,6 +205,59 @@ private fun TweakRow(
     ) {
         TweakNameText(entry = tweakEntry)
         content()
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
+@Composable
+private fun <T> TweakRowWithEditableTextField(
+    entry: TweakEntry<T>,
+    context: Context,
+    value: T?,
+    tweakRowViewModel: TweakEntryViewModel<T>,
+    keyboardController: SoftwareKeyboardController?,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    onTextFieldValueChanged: (String) -> Unit,
+) {
+
+    var inEditionMode by remember { mutableStateOf(false) }
+
+    TweakRow(
+        tweakEntry = entry,
+        onClick = {
+            Toast
+                .makeText(context, "Current value is $value", Toast.LENGTH_LONG)
+                .show()
+        },
+        onLongClick = {
+            inEditionMode = true
+        }) {
+
+        if (inEditionMode) {
+            TextField(
+                modifier = Modifier.weight(100F, true),
+                value = "$value",
+                onValueChange = onTextFieldValueChanged,
+                maxLines = 1,
+                keyboardOptions = keyboardOptions.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    inEditionMode = false
+                    keyboardController?.hide()
+                }),
+            )
+            IconButton(onClick = {
+                tweakRowViewModel.clearValue(entry)
+                inEditionMode = false
+                keyboardController?.hide()
+            }) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "delete")
+            }
+        } else {
+            Text(
+                text = "$value",
+                fontFamily = FontFamily.Monospace,
+            )
+        }
     }
 }
 
