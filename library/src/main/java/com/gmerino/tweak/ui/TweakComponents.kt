@@ -85,9 +85,20 @@ fun TweakGroupBody(
                     is EditableIntTweakEntry -> EditableIntTweakEntryBody(entry = entry)
                     is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry = entry)
                     is ReadOnlyStringTweakEntry -> ReadOnlyStringTweakEntryBody(entry = entry)
+                    is ButtonTweakEntry -> TweakButton(entry = entry)
                 }
             }
         }
+    }
+}
+
+@Composable
+fun TweakButton(entry: ButtonTweakEntry) {
+    Button(
+        onClick = entry.action,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(entry.name)
     }
 }
 
@@ -99,7 +110,7 @@ fun ReadOnlyStringTweakEntryBody(
     val context = LocalContext.current
     val value by tweakRowViewModel
         .getValue(entry)
-        .collectAsState(initial = false)
+        .collectAsState(initial = null)
     TweakRow(
         tweakEntry = entry,
         onClick = {

@@ -15,14 +15,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.gmerino.debug_tweaks.ui.theme.DebugTweaksTheme
+import com.gmerino.tweak.Tweaks
 import com.gmerino.tweak.addTweakGraph
 import com.gmerino.tweak.domain.*
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             DebugTweaksTheme {
                 val navController = rememberNavController()
@@ -53,52 +56,10 @@ class MainActivity : ComponentActivity() {
             modifier = modifier,
         ) {
             addTweakGraph(
-                tweaksGraph = demoTweakGraph(),
                 navController = navController,
             )
         }
     }
-
-    private fun demoTweakGraph() = TweaksGraph(
-        category = listOf(
-            TweakCategory(
-                "Screen 1", listOf(
-                    TweakGroup(
-                        "Group 1", listOf(
-                            ReadOnlyStringTweakEntry(
-                                key = "timestamp",
-                                name = "Current timestamp",
-                            ) {
-                                flow {
-                                    while (true) {
-                                        emit("System.currentTimeMillis() / 1000")
-                                        delay(1000)
-                                    }
-                                }
-                            },
-                            EditableStringTweakEntry(
-                                key = "value1",
-                                name = "Value 1",
-                            ),
-                            EditableBooleanTweakEntry(
-                                key = "value2",
-                                name = "Value 2",
-                            ),
-                            EditableIntTweakEntry(
-                                key = "value3",
-                                name = "Value 3",
-                            ),
-                            EditableLongTweakEntry(
-                                key = "value4",
-                                name = "Value 4",
-                            )
-                        )
-                    )
-                )
-            )
-        )
-    )
-
 }
 
 @Composable

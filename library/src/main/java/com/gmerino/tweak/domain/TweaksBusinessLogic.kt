@@ -1,9 +1,10 @@
 package com.gmerino.tweak.domain
 
+import android.util.Log
 import androidx.datastore.preferences.core.*
 import com.gmerino.tweak.data.TweaksDataStore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,9 +13,11 @@ class TweaksBusinessLogic @Inject constructor(
     private val tweaksDataStore: TweaksDataStore,
 ) {
 
+    internal lateinit var tweaksGraph: TweaksGraph
     private val keyToEntryValueMap: MutableMap<String, TweakEntry<*>> = mutableMapOf()
 
     internal fun initialize(tweaksGraph: TweaksGraph) {
+        this.tweaksGraph = tweaksGraph
         val alreadyIntroducedKeys = mutableSetOf<String>()
         val allEntries: List<TweakEntry<*>> = tweaksGraph.category
             .flatMap { category ->
@@ -23,22 +26,43 @@ class TweaksBusinessLogic @Inject constructor(
                 }
             }
         allEntries.forEach { entry ->
-            if (alreadyIntroducedKeys.contains(entry.key)) {
-                throw IllegalStateException("There is a repeated key in the tweaks, review your graph")
-            }
-
-            alreadyIntroducedKeys.add(entry.key)
+            checkIfRepeatedKey(alreadyIntroducedKeys, entry)
             keyToEntryValueMap[entry.key] = entry
         }
     }
 
+    private fun checkIfRepeatedKey(
+        alreadyIntroducedKeys: MutableSet<String>,
+        entry: TweakEntry<*>
+    ) {
+        if (alreadyIntroducedKeys.contains(entry.key)) {
+            throw IllegalStateException("There is a repeated key in the tweaks, review your graph")
+        }
+
+        alreadyIntroducedKeys.add(entry.key)
+    }
+
     @Suppress("UNCHECKED_CAST")
     fun <T> getValue(key: String): Flow<T?> = tweaksDataStore.data
-        .map { preferences -> preferences[buildKey<T>(keyToEntryValueMap[key] as TweakEntry<T>)] }
+        .map { preferences -> preferences[buildKey(keyToEntryValueMap[key] as TweakEntry<T>)] }
 
     fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
-        is ReadOnly<*> -> (entry as ReadOnly<T>).value()
-        is Editable -> getFromStorage(entry)
+        is ReadOnly<*> -> (entry as ReadOnly<T>).value
+        is Editable<*> -> getEditableValue(entry)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun <T> getEditableValue(entry: TweakEntry<T>): Flow<T?> {
+        val editableCasted = entry as Editable<T>
+        val defaultValue = editableCasted.defaultValue
+        return if (defaultValue != null) {
+            defaultValue.combine(getFromStorage(entry)) { default, storage ->
+                Log.d("gmerinoTest", "Storage $storage, Default $default")
+                storage ?: default
+            }
+        } else {
+            getFromStorage(entry)
+        }
     }
 
     private fun <T> getFromStorage(entry: TweakEntry<T>) =
@@ -64,5 +88,6 @@ class TweaksBusinessLogic @Inject constructor(
         is EditableBooleanTweakEntry -> booleanPreferencesKey(entry.key) as Preferences.Key<T>
         is EditableIntTweakEntry -> intPreferencesKey(entry.key) as Preferences.Key<T>
         is EditableLongTweakEntry -> longPreferencesKey(entry.key) as Preferences.Key<T>
+        is ButtonTweakEntry -> throw java.lang.IllegalStateException("Buttons doesn't have keys")
     }
 }

@@ -56,9 +56,9 @@ class Tweaks {
 }
 
 fun NavGraphBuilder.addTweakGraph(
-    tweaksGraph: TweaksGraph,
     navController: NavController,
 ) {
+    val tweaksGraph = Tweaks.getReference().tweaksBusinessLogic.tweaksGraph
     navigation(
         startDestination = TWEAK_MAIN_SCREEN,
         route = TWEAKS_NAVIGATION_ENTRYPOINT,
