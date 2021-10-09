@@ -15,3 +15,9 @@ internal object Constants {
     const val TWEAKS_NAVIGATION_ENTRYPOINT = "tweaks"
     const val TWEAK_MAIN_SCREEN = "tweaks-main-screen"
 }
+
+//sealed class TweakKey(val key: String, val type: Class<*>)
+//class StringTweakKey(key: String): TweakKey(key, String::class.java)
+//class BooleanTweakKey(key: String): TweakKey(key, Boolean::class.java)
+//class IntTweakKey(key: String): TweakKey(key, Int::class.java)
+//class LongTweakKey(key: String): TweakKey(key, Long::class.java)

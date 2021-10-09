@@ -92,12 +92,12 @@ fun TweakGroupBody(
 @Composable
 fun EditableStringTweakEntryBody(
     entry: EditableStringTweakEntry,
-    tweakRowViewModel: StringTweakViewModel = StringTweakViewModel()
+    tweakRowViewModel: TweakEntryViewModel<String> = TweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val value: String? by tweakRowViewModel
-        .getValue(context, entry.key)
+        .getValue(entry)
         .collectAsState(initial = null)
     var inEditionMode by remember { mutableStateOf(false) }
     TweakRow(
@@ -115,7 +115,7 @@ fun EditableStringTweakEntryBody(
             TextField(
                 modifier = Modifier.weight(100F, true),
                 value = value ?: "",
-                onValueChange = { tweakRowViewModel.setValue(context, entry, it) },
+                onValueChange = { tweakRowViewModel.setValue(entry, it) },
                 maxLines = 1,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = {
@@ -124,7 +124,7 @@ fun EditableStringTweakEntryBody(
                 }),
             )
             IconButton(onClick = {
-                tweakRowViewModel.clearValue(context, entry)
+                tweakRowViewModel.clearValue(entry)
                 inEditionMode = false
                 keyboardController?.hide()
             }) {
@@ -142,11 +142,11 @@ fun EditableStringTweakEntryBody(
 @Composable
 fun EditableBooleanTweakEntryBody(
     entry: EditableBooleanTweakEntry,
-    tweakRowViewModel: BooleanTweakViewModel = BooleanTweakViewModel()
+    tweakRowViewModel: TweakEntryViewModel<Boolean> = TweakEntryViewModel()
 ) {
     val context = LocalContext.current
     val value by tweakRowViewModel
-        .getValue(context, entry.key)
+        .getValue(entry)
         .collectAsState(initial = false)
     TweakRow(
         tweakEntry = entry,
@@ -156,7 +156,7 @@ fun EditableBooleanTweakEntryBody(
                 .show()
         }) {
         Checkbox(checked = value ?: false, onCheckedChange = {
-            tweakRowViewModel.setValue(context, entry, it)
+            tweakRowViewModel.setValue(entry, it)
         })
     }
 }
@@ -164,7 +164,7 @@ fun EditableBooleanTweakEntryBody(
 @Composable
 fun EditableIntTweakEntryBody(
     entry: EditableIntTweakEntry,
-    tweakRowViewModel: IntTweakViewModel = IntTweakViewModel()
+    tweakRowViewModel: TweakEntryViewModel<Int> = TweakEntryViewModel()
 ) {
 
 }
@@ -172,7 +172,7 @@ fun EditableIntTweakEntryBody(
 @Composable
 fun EditableLongTweakEntryBody(
     entry: EditableLongTweakEntry,
-    tweakRowViewModel: LongTweakViewModel = LongTweakViewModel()
+    tweakRowViewModel: TweakEntryViewModel<Long> = TweakEntryViewModel()
 ) {
 
 }
