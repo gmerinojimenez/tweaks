@@ -19,6 +19,24 @@ buildscript {
     }
 }
 
+plugins {
+    id("io.gitlab.arturbosch.detekt").version("1.15.0")
+}
+
+detekt {
+    input = files(rootProject.rootDir)
+    config = files("$projectDir/detekt.yml")
+    failFast = true
+    buildUponDefaultConfig = true
+
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        xml.destination = file("$buildDir/reports/detekt/detekt-checkstyle.xml")
+        html.destination = file("$buildDir/reports/detekt/detekt-report.html")
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

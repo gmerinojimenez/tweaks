@@ -17,6 +17,8 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        missingDimensionStrategy 'tweaksMode', 'enabled'
     }
 
     buildTypes {
