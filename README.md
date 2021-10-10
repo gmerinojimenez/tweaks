@@ -88,4 +88,4 @@ And then, in your NavHost setup, use the extension function `NavGraphBuilder.add
     }
 ```
 
-Please review the app module for configuration examples.
+Please review the app module for configuration examples. Check the available nodes in the graph [here](https://github.com/gmerinojimenez/tweaks/blob/main/library/src/enabled/java/com/gmerino/tweak/domain/tweakModels.kt)
