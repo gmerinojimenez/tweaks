@@ -3,17 +3,27 @@ package com.gmerino.tweak.domain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/** The top level node of the tweak graphs. It contains a list of categories (screens)*/
 data class TweaksGraph(val category: List<TweakCategory>)
+
+/** A tweak category is a screen, for example your app tweaks can be splitted by features
+ *  (chat, video, login...) each one of those can be a category
+ *  */
 data class TweakCategory(val title: String, val groups: List<TweakGroup>)
+
+/** A bunch of tweaks that are related to each other, for example: domain & port for the backend server configurations*/
 data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>)
 
 sealed class TweakEntry<T>(val key: String, val name: String)
 
+/** A button, with a customizable action*/
 class ButtonTweakEntry(key: String, name: String, val action: () -> Unit): TweakEntry<Unit>(key, name)
 
+/** A non editable entry */
 class ReadOnlyStringTweakEntry(key: String, name: String, override val value: Flow<String>) :
     TweakEntry<String>(key, name), ReadOnly<String>
 
+/** An editable entry. It can be modified by using long-press*/
 class EditableStringTweakEntry(
     key: String,
     name: String,
@@ -26,6 +36,7 @@ class EditableStringTweakEntry(
     ) : this(key, name, flow { emit(defaultUniqueValue) })
 }
 
+/** An editable entry. It can be modified by using long-press*/
 class EditableBooleanTweakEntry(
     key: String,
     name: String,
@@ -38,6 +49,7 @@ class EditableBooleanTweakEntry(
     ) : this(key, name, flow { emit(defaultUniqueValue) })
 }
 
+/** An editable entry. It can be modified by using long-press*/
 class EditableIntTweakEntry(
     key: String,
     name: String,
@@ -50,6 +62,7 @@ class EditableIntTweakEntry(
     ) : this(key, name, flow { emit(defaultUniqueValue) })
 }
 
+/** An editable entry. It can be modified by using long-press*/
 class EditableLongTweakEntry(
     key: String,
     name: String,

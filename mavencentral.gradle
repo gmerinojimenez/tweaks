@@ -20,6 +20,17 @@ ext {
     PUBLISH_REPO_URL = 'https://github.com/gmerinojimenez/tweaks'
 }
 
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value -> ext[name] = value }
+} else {
+    println "File Not found"
+}
+
 publishing {
     publications {
         release(MavenPublication) {
@@ -27,7 +38,7 @@ publishing {
             artifactId PUBLISH_ARTIFACT_ID
             version PUBLISH_VERSION
 
-            artifact("$buildDir/outputs/aar/library-release.aar")
+            artifact("$buildDir/outputs/aar/${project.getName()}-enabled-release.aar")
             artifact androidSourcesJar
 
             pom {
@@ -73,7 +84,7 @@ publishing {
             artifact androidSourcesJar
 
             pom {
-                name = PUBLISH_CATALOG_NAME
+                name = "$PUBLISH_RELEASE_NAME-no-op"
                 description = PUBLISH_DESCRIPTION
                 url = PUBLISH_REPO_URL
                 licenses {
@@ -117,21 +128,25 @@ publishing {
         maven {
             name = "sonatype"
 
-            def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
-            def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+            def releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+            def snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
             credentials {
-                username System.getenv("MOBILE_MAVENCENTRAL_USER")
-                password System.getenv("MOBILE_MAVENCENTRAL_PASSWORD")
+                username ossrhUsername
+                password ossrhPassword
             }
         }
     }
 }
 
+//signing {
+//    def signingKeyId = findProperty("signingKeyId")
+//    def signingKey = findProperty("signingKey")
+//    def signingPassword = findProperty("signingPassword")
+//    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+//    sign publishing.publications
+//}
+
 signing {
-    def signingKeyId = findProperty("signingKeyId")
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign publishing.publications
 }

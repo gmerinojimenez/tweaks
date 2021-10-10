@@ -40,3 +40,10 @@ detekt {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+allprojects {
+
+    group = 'com.gmerinojimenez.tweaks'
+    version = '0.0.10'
+
+}
