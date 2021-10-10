@@ -57,7 +57,6 @@ class TweaksBusinessLogic @Inject constructor(
         val defaultValue = editableCasted.defaultValue
         return if (defaultValue != null) {
             defaultValue.combine(getFromStorage(entry)) { default, storage ->
-                Log.d("gmerinoTest", "Storage $storage, Default $default")
                 storage ?: default
             }
         } else {
