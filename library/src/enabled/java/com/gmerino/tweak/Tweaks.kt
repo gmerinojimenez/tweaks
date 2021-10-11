@@ -11,16 +11,22 @@ import com.gmerino.tweak.di.TweaksModule
 import com.gmerino.tweak.domain.Constants.TWEAKS_NAVIGATION_ENTRYPOINT
 import com.gmerino.tweak.domain.Constants.TWEAK_MAIN_SCREEN
 import com.gmerino.tweak.domain.TweakCategory
+import com.gmerino.tweak.domain.TweakEntry
 import com.gmerino.tweak.domain.TweaksBusinessLogic
 import com.gmerino.tweak.domain.TweaksGraph
 import com.gmerino.tweak.ui.TweaksCategoryScreen
 import com.gmerino.tweak.ui.TweaksScreen
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class Tweaks {
 
     @Inject
     internal lateinit var tweaksBusinessLogic: TweaksBusinessLogic
+
+    fun <T>getTweakValue(key: String): Flow<T?> = tweaksBusinessLogic.getValue(key)
+    
+    fun <T> getTweakValue(entry: TweakEntry<T>): Flow<T?> = tweaksBusinessLogic.getValue(entry)
 
     private fun initializeGraph(tweaksGraph: TweaksGraph) {
         tweaksBusinessLogic.initialize(tweaksGraph)
@@ -40,7 +46,7 @@ class Tweaks {
             reference!!.initializeGraph(tweaksGraph)
         }
 
-        fun getReference() = reference!!
+        internal fun getReference() = reference!!
 
         private fun inject(application: Application) {
             component = DaggerTweaksComponent
@@ -50,6 +56,10 @@ class Tweaks {
 
             component.inject(reference!!)
         }
+
+        fun <T>getTweakValue(key: String): Flow<T?> = reference!!.getTweakValue(key)
+
+        fun <T> getTweakValue(entry: TweakEntry<T>): Flow<T?> = reference!!.getTweakValue(entry)
     }
 
 
