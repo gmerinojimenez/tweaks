@@ -7,7 +7,7 @@ android {
     compileSdk 31
 
     defaultConfig {
-        applicationId "com.gmerino.debug_settings"
+        applicationId "com.gmerinojimenez.tweaks.demo"
         minSdk 21
         targetSdk 31
         versionCode 1
