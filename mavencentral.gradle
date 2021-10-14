@@ -114,12 +114,6 @@ publishing {
                         dependencyNode.appendNode('artifactId', it.name)
                         dependencyNode.appendNode('version', it.version)
                     }
-
-                    //Add a dependency with the library
-                    def dependencyNode = dependenciesNode.appendNode('dependency')
-                    dependencyNode.appendNode('groupId', PUBLISH_GROUP_ID)
-                    dependencyNode.appendNode('artifactId', PUBLISH_ARTIFACT_ID)
-                    dependencyNode.appendNode('version', PUBLISH_VERSION)
                 }
             }
         }

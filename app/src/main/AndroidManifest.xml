@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gmerino.debug_tweaks">
+    package="com.gmerinojimenez.tweaks.demo">
 
     <application
         android:allowBackup="true"
@@ -11,7 +11,7 @@
         android:name=".TweakDemoApplication"
         android:theme="@style/Theme.DebugSettings">
         <activity
-            android:name="com.gmerino.debug_tweaks.MainActivity"
+            android:name="com.gmerinojimenez.tweaks.demo.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.DebugSettings.NoActionBar">
