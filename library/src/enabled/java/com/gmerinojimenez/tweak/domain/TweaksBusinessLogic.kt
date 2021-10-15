@@ -42,8 +42,10 @@ class TweaksBusinessLogic @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(key: String): Flow<T?> = tweaksDataStore.data
-        .map { preferences -> preferences[buildKey(keyToEntryValueMap[key] as TweakEntry<T>)] }
+    fun <T> getValue(key: String): Flow<T?> {
+        val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
+        return getValue(tweakEntry)
+    }
 
     fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
@@ -54,13 +56,10 @@ class TweaksBusinessLogic @Inject constructor(
     private fun <T> getEditableValue(entry: TweakEntry<T>): Flow<T?> {
         val editableCasted = entry as Editable<T>
         val defaultValue = editableCasted.defaultValue
-        return if (defaultValue != null) {
-            defaultValue.combine(getFromStorage(entry)) { default, storage ->
-                storage ?: default
-            }
-        } else {
-            getFromStorage(entry)
+        return defaultValue?.combine(getFromStorage(entry)) { default, storage ->
+            storage ?: default
         }
+            ?: getFromStorage(entry)
     }
 
     private fun <T> getFromStorage(entry: TweakEntry<T>) =
