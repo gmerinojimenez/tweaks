@@ -48,7 +48,7 @@ class Tweaks {
         }
 
         @JvmStatic
-        internal fun getReference() = reference!!
+        fun getReference() = reference!!
 
         private fun inject(application: Application) {
             component = DaggerTweaksComponent

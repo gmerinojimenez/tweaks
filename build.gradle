@@ -44,6 +44,6 @@ task clean(type: Delete) {
 allprojects {
 
     group = 'com.gmerinojimenez.tweaks'
-    version = '0.0.3'
+    version = '0.0.4'
 
 }
