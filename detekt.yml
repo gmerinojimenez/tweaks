@@ -9,6 +9,10 @@ build:
 complexity:
   TooManyFunctions:
     active: false
+  LongMethod:
+    active: false
+  LongParameterList:
+    active: false
 
 empty-blocks:
   EmptyFunctionBlock:
@@ -17,4 +21,12 @@ style:
   MagicNumber:
     active: false
   NewLineAtEndOfFile:
+    active: false
+  UnusedPrivateMember:
+    active: false
+  WildcardImport:
+    active: false
+
+exceptions:
+  TooGenericExceptionThrown:
     active: false
