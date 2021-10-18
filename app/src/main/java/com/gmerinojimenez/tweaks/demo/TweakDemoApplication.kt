@@ -44,7 +44,7 @@ class TweakDemoApplication : Application() {
                                     while (true) {
                                         counter += 1
                                         emit(counter)
-                                        delay(10000)
+                                        delay(1000)
                                     }
                                 },
                             ),

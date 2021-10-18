@@ -80,12 +80,12 @@ fun TweakGroupBody(
             Divider(thickness = 2.dp)
             tweakGroup.entries.forEach { entry ->
                 when (entry) {
-                    is EditableStringTweakEntry -> EditableStringTweakEntryBody(entry = entry)
-                    is EditableBooleanTweakEntry -> EditableBooleanTweakEntryBody(entry = entry)
-                    is EditableIntTweakEntry -> EditableIntTweakEntryBody(entry = entry)
-                    is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry = entry)
-                    is ReadOnlyStringTweakEntry -> ReadOnlyStringTweakEntryBody(entry = entry)
-                    is ButtonTweakEntry -> TweakButton(entry = entry)
+                    is EditableStringTweakEntry -> EditableStringTweakEntryBody(entry, EditableTweakEntryViewModel())
+                    is EditableBooleanTweakEntry -> EditableBooleanTweakEntryBody(entry, EditableTweakEntryViewModel())
+                    is EditableIntTweakEntry -> EditableIntTweakEntryBody(entry, EditableTweakEntryViewModel())
+                    is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry, EditableTweakEntryViewModel())
+                    is ReadOnlyStringTweakEntry -> ReadOnlyStringTweakEntryBody(entry, ReadOnlyTweakEntryViewModel())
+                    is ButtonTweakEntry -> TweakButton(entry)
                 }
             }
         }
@@ -108,9 +108,9 @@ fun ReadOnlyStringTweakEntryBody(
     tweakRowViewModel: ReadOnlyTweakEntryViewModel<String> = ReadOnlyTweakEntryViewModel()
 ) {
     val context = LocalContext.current
-    val value by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = null)
+    val value by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = null)
     TweakRow(
         tweakEntry = entry,
         onClick = {
@@ -125,7 +125,6 @@ fun ReadOnlyStringTweakEntryBody(
     }
 }
 
-
 @OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun EditableStringTweakEntryBody(
@@ -134,9 +133,10 @@ fun EditableStringTweakEntryBody(
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val value: String? by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = null)
+    val value: String? by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = null)
+
     TweakRowWithEditableTextField(
         entry,
         context,
@@ -153,9 +153,10 @@ fun EditableBooleanTweakEntryBody(
     tweakRowViewModel: EditableTweakEntryViewModel<Boolean> = EditableTweakEntryViewModel()
 ) {
     val context = LocalContext.current
-    val value by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = false)
+    val value: Boolean? by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = false)
+
     TweakRow(
         tweakEntry = entry,
         onClick = {
@@ -177,9 +178,10 @@ fun EditableIntTweakEntryBody(
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val value: Int? by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = null)
+    val value: Int? by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = null)
+
     TweakRowWithEditableTextField(
         entry,
         context,
@@ -202,9 +204,10 @@ fun EditableLongTweakEntryBody(
 ) {
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val value: Long? by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = null)
+    val value: Long? by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = null)
+
     TweakRowWithEditableTextField(
         entry,
         context,
