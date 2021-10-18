@@ -29,4 +29,4 @@ jobs:
           wrapper-cache-enabled: false
           dependencies-cache-enabled: false
           configuration-cache-enabled: false
-          arguments: assembleRelease
+          arguments: assembleRelease check detekt
