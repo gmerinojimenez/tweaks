@@ -1,4 +1,4 @@
-package com.gmerinojimenez.tweak.ui
+package com.gmerinojimenez.tweaks.ui
 
 import android.content.Context
 import android.widget.Toast
@@ -22,7 +22,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gmerinojimenez.tweak.domain.*
+import com.gmerinojimenez.tweaks.domain.*
 
 @Composable
 fun TweaksScreen(

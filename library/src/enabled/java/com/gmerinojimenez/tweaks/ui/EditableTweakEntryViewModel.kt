@@ -1,10 +1,10 @@
-package com.gmerinojimenez.tweak.ui
+package com.gmerinojimenez.tweaks.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gmerinojimenez.tweak.Tweaks
-import com.gmerinojimenez.tweak.domain.TweakEntry
-import com.gmerinojimenez.tweak.domain.TweaksBusinessLogic
+import com.gmerinojimenez.tweaks.Tweaks
+import com.gmerinojimenez.tweaks.domain.TweakEntry
+import com.gmerinojimenez.tweaks.domain.TweaksBusinessLogic
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 

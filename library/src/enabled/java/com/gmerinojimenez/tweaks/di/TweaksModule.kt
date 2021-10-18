@@ -1,4 +1,4 @@
-package com.gmerinojimenez.tweak.di
+package com.gmerinojimenez.tweaks.di
 
 import android.content.Context
 import dagger.Module

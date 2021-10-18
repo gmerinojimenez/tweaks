@@ -1,4 +1,4 @@
-package com.gmerinojimenez.tweak.data
+package com.gmerinojimenez.tweaks.data
 
 import android.content.Context
 import androidx.datastore.core.DataStore

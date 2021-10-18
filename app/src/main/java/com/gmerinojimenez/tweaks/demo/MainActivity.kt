@@ -15,7 +15,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.gmerinojimenez.tweaks.demo.theme.DebugTweaksTheme
-import com.gmerinojimenez.tweak.addTweakGraph
+import com.gmerinojimenez.tweaks.addTweakGraph
 
 class MainActivity : ComponentActivity() {
 

@@ -1,7 +1,7 @@
-package com.gmerinojimenez.tweak.domain
+package com.gmerinojimenez.tweaks.domain
 
 import androidx.datastore.preferences.core.*
-import com.gmerinojimenez.tweak.data.TweaksDataStore
+import com.gmerinojimenez.tweaks.data.TweaksDataStore
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject

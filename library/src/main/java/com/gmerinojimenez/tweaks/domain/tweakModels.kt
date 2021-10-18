@@ -1,4 +1,4 @@
-package com.gmerinojimenez.tweak.domain
+package com.gmerinojimenez.tweaks.domain
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

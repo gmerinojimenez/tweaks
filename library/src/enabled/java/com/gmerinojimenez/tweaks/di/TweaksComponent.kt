@@ -1,6 +1,6 @@
-package com.gmerinojimenez.tweak.di
+package com.gmerinojimenez.tweaks.di
 
-import com.gmerinojimenez.tweak.Tweaks
+import com.gmerinojimenez.tweaks.Tweaks
 import dagger.Component
 import javax.inject.Singleton
 

@@ -1,21 +1,21 @@
-package com.gmerinojimenez.tweak
+package com.gmerinojimenez.tweaks
 
 import android.app.Application
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.gmerinojimenez.tweak.Tweaks.Companion.TWEAKS_NAVIGATION_ENTRYPOINT
-import com.gmerinojimenez.tweak.di.TweaksComponent
-import com.gmerinojimenez.tweak.di.DaggerTweaksComponent
-import com.gmerinojimenez.tweak.di.TweaksModule
-import com.gmerinojimenez.tweak.domain.Constants.TWEAK_MAIN_SCREEN
-import com.gmerinojimenez.tweak.domain.TweakCategory
-import com.gmerinojimenez.tweak.domain.TweakEntry
-import com.gmerinojimenez.tweak.domain.TweaksBusinessLogic
-import com.gmerinojimenez.tweak.domain.TweaksGraph
-import com.gmerinojimenez.tweak.ui.TweaksCategoryScreen
-import com.gmerinojimenez.tweak.ui.TweaksScreen
+import com.gmerinojimenez.tweaks.Tweaks.Companion.TWEAKS_NAVIGATION_ENTRYPOINT
+import com.gmerinojimenez.tweaks.di.TweaksComponent
+import com.gmerinojimenez.tweaks.di.DaggerTweaksComponent
+import com.gmerinojimenez.tweaks.di.TweaksModule
+import com.gmerinojimenez.tweaks.domain.Constants.TWEAK_MAIN_SCREEN
+import com.gmerinojimenez.tweaks.domain.TweakCategory
+import com.gmerinojimenez.tweaks.domain.TweakEntry
+import com.gmerinojimenez.tweaks.domain.TweaksBusinessLogic
+import com.gmerinojimenez.tweaks.domain.TweaksGraph
+import com.gmerinojimenez.tweaks.ui.TweaksCategoryScreen
+import com.gmerinojimenez.tweaks.ui.TweaksScreen
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

@@ -2,8 +2,8 @@ package com.gmerinojimenez.tweaks.demo
 
 import android.app.Application
 import android.widget.Toast
-import com.gmerinojimenez.tweak.Tweaks
-import com.gmerinojimenez.tweak.domain.*
+import com.gmerinojimenez.tweaks.Tweaks
+import com.gmerinojimenez.tweaks.domain.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 
