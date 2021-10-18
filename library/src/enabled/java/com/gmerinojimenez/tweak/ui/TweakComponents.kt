@@ -108,9 +108,9 @@ fun ReadOnlyStringTweakEntryBody(
     tweakRowViewModel: ReadOnlyTweakEntryViewModel<String> = ReadOnlyTweakEntryViewModel()
 ) {
     val context = LocalContext.current
-    val value by tweakRowViewModel
-        .getValue(entry)
-        .collectAsState(initial = null)
+    val value by remember {
+        tweakRowViewModel.getValue(entry)
+    }.collectAsState(initial = null)
     TweakRow(
         tweakEntry = entry,
         onClick = {
