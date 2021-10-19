@@ -14,56 +14,62 @@ class TweakDemoApplication : Application() {
     }
 
     var counter = 0
-    private fun demoTweakGraph() = TweaksGraph(
-        category = listOf(
-            TweakCategory(
-                "Screen 1", listOf(
-                    TweakGroup(
-                        "Group 1", listOf(
-                            ReadOnlyStringTweakEntry(
-                                key = "timestamp",
-                                name = "Current timestamp",
-                                value = flow {
-                                    while (true) {
-                                        emit("${System.currentTimeMillis() / 1000}")
-                                        delay(1000)
-                                    }
-                                }),
-                            EditableStringTweakEntry(
-                                key = "value1",
-                                name = "Value 1",
-                            ),
-                            EditableBooleanTweakEntry(
-                                key = "value2",
-                                name = "Value 2",
-                            ),
-                            EditableIntTweakEntry(
-                                key = "value3",
-                                name = "Value 3",
-                                defaultValue = flow {
-                                    while (true) {
-                                        counter += 1
-                                        emit(counter)
-                                        delay(1000)
-                                    }
-                                },
-                            ),
-                            EditableLongTweakEntry(
-                                key = "value4",
-                                name = "Value 4",
-                                defaultUniqueValue = 0,
-                            ),
-                            ButtonTweakEntry(
-                                key = "button1",
-                                name = "Demo button"
-                            ) {
-                                Toast.makeText(this, "Demo button", Toast.LENGTH_LONG).show()
+
+    private fun demoTweakGraph() = tweaksGraph {
+        tweakCategory("Screen 1") {
+            tweakGroup("Group 1") {
+                addEntry(
+                    ReadOnlyStringTweakEntry(
+                        key = "timestamp",
+                        name = "Current timestamp",
+                        value = flow {
+                            while (true) {
+                                emit("${System.currentTimeMillis() / 1000}")
+                                delay(1000)
                             }
-                        )
+                        })
+                )
+                addEntry(
+                    EditableStringTweakEntry(
+                        key = "value1",
+                        name = "Value 1",
                     )
                 )
-            )
-        )
-    )
-
+                addEntry(
+                    EditableBooleanTweakEntry(
+                        key = "value2",
+                        name = "Value 2",
+                    )
+                )
+                addEntry(
+                    EditableIntTweakEntry(
+                        key = "value3",
+                        name = "Value 3",
+                        defaultValue = flow {
+                            while (true) {
+                                counter += 1
+                                emit(counter)
+                                delay(1000)
+                            }
+                        }
+                    )
+                )
+                addEntry(
+                    EditableLongTweakEntry(
+                        key = "value4",
+                        name = "Value 4",
+                        defaultUniqueValue = 0,
+                    )
+                )
+                addEntry(
+                    ButtonTweakEntry(
+                        key = "button1",
+                        name = "Demo button"
+                    ) {
+                        Toast.makeText(this@TweakDemoApplication, "Demo button", Toast.LENGTH_LONG).show()
+                    }
+                )
+            }
+        }
+    }
 }

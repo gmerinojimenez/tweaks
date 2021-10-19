@@ -25,7 +25,7 @@ class Tweaks {
     }
 
     private fun initialize(tweaksGraph: TweaksGraph) {
-        val allEntries: List<TweakEntry<*>> = tweaksGraph.category
+        val allEntries: List<TweakEntry<*>> = tweaksGraph.categories
             .flatMap { category ->
                 category.groups.flatMap { group ->
                     group.entries

@@ -3,16 +3,56 @@ package com.gmerinojimenez.tweaks.domain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+fun tweaksGraph(block: TweaksGraph.Builder.() -> Unit): TweaksGraph {
+    val builder = TweaksGraph.Builder()
+    builder.block()
+    return builder.build()
+}
+
 /** The top level node of the tweak graphs. It contains a list of categories (screens)*/
-data class TweaksGraph(val category: List<TweakCategory>)
+data class TweaksGraph(val categories: List<TweakCategory>) {
+    class Builder {
+        private val categories = mutableListOf<TweakCategory>()
+
+        fun tweakCategory(title: String, block: TweakCategory.Builder.() -> Unit) {
+            val builder = TweakCategory.Builder(title)
+            builder.block()
+            categories.add(builder.build())
+        }
+
+        internal fun build(): TweaksGraph = TweaksGraph(categories)
+    }
+}
 
 /** A tweak category is a screen, for example your app tweaks can be splitted by features
  *  (chat, video, login...) each one of those can be a category
  *  */
-data class TweakCategory(val title: String, val groups: List<TweakGroup>)
+data class TweakCategory(val title: String, val groups: List<TweakGroup>) {
+    class Builder(private val title: String) {
+        private val groups = mutableListOf<TweakGroup>()
+
+        fun tweakGroup(title: String, block: TweakGroup.Builder.() -> Unit) {
+            val builder = TweakGroup.Builder(title)
+            builder.block()
+            groups.add(builder.build())
+        }
+
+        internal fun build(): TweakCategory = TweakCategory(title, groups)
+    }
+}
 
 /** A bunch of tweaks that are related to each other, for example: domain & port for the backend server configurations*/
-data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>)
+data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
+    class Builder(private val title: String) {
+        private val entries = mutableListOf<TweakEntry<*>>()
+
+        fun addEntry(entry: TweakEntry<*>) {
+            entries.add(entry)
+        }
+
+        internal fun build(): TweakGroup = TweakGroup(title, entries)
+    }
+}
 
 sealed class TweakEntry<T>(val key: String, val name: String)
 
