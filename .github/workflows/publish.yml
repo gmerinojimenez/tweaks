@@ -1,0 +1,48 @@
+name: "Release library to MavenCentral"
+on
+  workflow_dispatch:
+    inputs:
+      libraryVersion:
+        description: "Library version"
+        required: true
+      changelog:
+        description: "Changelog (you can format it later)"
+        required: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.5
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+
+#      - name: Assemble
+#        run: ./gradlew assembleDebug
+#      - name: Lint
+#        run: ./gradlew lint
+#      - name: Unit Tests
+#        run: ./gradlew test
+
+      ## Build all our Build Types at once ##
+#       - name: Build all artifacts
+#         id: buildAllApks
+#         uses: eskatos/gradle-command-action@v1.3.3
+#         with:
+#           gradle-version: current
+#           wrapper-cache-enabled: false
+#           dependencies-cache-enabled: false
+#           configuration-cache-enabled: false
+#           arguments: :library:assembleRelease publishReleasePublicationToSonatypeRepository publishNoopPublicationToSonatypeRepository
+        - uses: gradle/gradle-build-action@v2
+            with:
+              arguments: :library:assembleRelease
+        - uses: gradle/gradle-build-action@v2
+            env:
+              
+            with:
+              arguments: publishReleasePublicationToSonatypeRepository
