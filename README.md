@@ -1,6 +1,9 @@
+[![Platform](https://img.shields.io/badge/Platform-Android-brightgreen)](https://github.com/gmerinojimenez/tweaks)
+[![Version](https://maven-badges.herokuapp.com/maven-central/io.github.gmerinojimenez/tweaks/badge.png)](https://search.maven.org/artifact/io.github.gmerinojimenez/tweaks)
+[![Support](https://img.shields.io/badge/Support-%3E%3D%20Android%205.0-brightgreen)](https://github.com/Telefonica/mistica-android)
+
 # Tweaks
 A customizable debug screen to view and edit flags that can be used for development in **Jetpack Compose** applications
-
 
 <img src="https://user-images.githubusercontent.com/4595241/136670126-10564d0c-9cc8-4758-bcdb-8ce7246b654e.gif" data-canonical-src="https://user-images.githubusercontent.com/4595241/136670126-10564d0c-9cc8-4758-bcdb-8ce7246b654e.gif" width="200" />
 
