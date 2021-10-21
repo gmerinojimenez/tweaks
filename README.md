@@ -10,13 +10,13 @@ A customizable debug screen to view and edit flags that can be used for developm
 To include the library add to your app's `build.gradle`:
 
 ```gradle
-implementation 'io.github.gmerinojimenez:tweaks:0.0.6'
+implementation 'io.github.gmerinojimenez:tweaks:{version}'
 ```
 
 Or, in case you want to don't add the library in release builds:
 ```gradle
-debugImplementation 'io.github.gmerinojimenez:tweaks:0.0.6'
-releaseImplementation 'io.github.gmerinojimenez:tweaks-no-op:0.0.6'
+debugImplementation 'io.github.gmerinojimenez:tweaks:{version}'
+releaseImplementation 'io.github.gmerinojimenez:tweaks-no-op:{version}'
 ```
 
 Then initialize the library in your app's `onCreate`:
