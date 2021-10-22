@@ -36,7 +36,7 @@ fun TweaksScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        tweaksGraph.category.forEach { category ->
+        tweaksGraph.categories.forEach { category ->
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { onCategoryButtonClicked(category) }) {

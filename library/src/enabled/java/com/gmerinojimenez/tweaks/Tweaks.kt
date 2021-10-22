@@ -78,7 +78,7 @@ fun NavGraphBuilder.addTweakGraph(
                 onCategoryButtonClicked = { navController.navigate(it.navigationRoute()) })
         }
 
-        tweaksGraph.category.forEach { category ->
+        tweaksGraph.categories.forEach { category ->
             composable(category.navigationRoute()) {
                 TweaksCategoryScreen(tweakCategory = category)
             }
