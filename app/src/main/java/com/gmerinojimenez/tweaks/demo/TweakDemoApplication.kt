@@ -16,8 +16,11 @@ class TweakDemoApplication : Application() {
     var counter = 0
 
     private fun demoTweakGraph() = tweaksGraph {
-        tweakCategory("Screen 1") {
-            tweakGroup("Group 1") {
+        cover("Tweaks Demo") {
+            label("cover-key", "Current user ID:") { flow { emit("1")} }
+        }
+        category("Screen 1") {
+            group("Group 1") {
                 label(
                     key = "timestamp",
                     name = "Current timestamp",

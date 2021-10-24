@@ -18,12 +18,18 @@ class TweaksBusinessLogic @Inject constructor(
     internal fun initialize(tweaksGraph: TweaksGraph) {
         this.tweaksGraph = tweaksGraph
         val alreadyIntroducedKeys = mutableSetOf<String>()
-        val allEntries: List<TweakEntry<*>> = tweaksGraph.categories
+        val allEntries: MutableList<TweakEntry<*>> = tweaksGraph.categories
             .flatMap { category ->
-                category.groups.flatMap { group ->
+                val groupsAndCover = if (tweaksGraph.cover != null) {
+                    category.groups.plus(tweaksGraph.cover)
+                } else {
+                    category.groups
+                }
+                groupsAndCover.flatMap { group ->
                     group.entries
                 }
-            }
+            }.toMutableList()
+
         allEntries.forEach { entry ->
             checkIfRepeatedKey(alreadyIntroducedKeys, entry)
             keyToEntryValueMap[entry.key] = entry

@@ -36,6 +36,9 @@ fun TweaksScreen(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        tweaksGraph.cover?.let {
+            TweakGroupBody(tweakGroup = it)
+        }
         tweaksGraph.categories.forEach { category ->
             Button(
                 modifier = Modifier.fillMaxWidth(),

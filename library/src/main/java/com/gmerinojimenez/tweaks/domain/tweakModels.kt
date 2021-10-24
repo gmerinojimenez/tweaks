@@ -10,17 +10,24 @@ fun tweaksGraph(block: TweaksGraph.Builder.() -> Unit): TweaksGraph {
 }
 
 /** The top level node of the tweak graphs. It contains a list of categories (screens)*/
-data class TweaksGraph(val categories: List<TweakCategory>) {
+data class TweaksGraph(val cover: TweakGroup?, val categories: List<TweakCategory>) {
     class Builder {
         private val categories = mutableListOf<TweakCategory>()
+        private var cover: TweakGroup? = null
 
-        fun tweakCategory(title: String, block: TweakCategory.Builder.() -> Unit) {
+        fun cover(title: String, block: TweakGroup.Builder.() -> Unit) {
+            val builder = TweakGroup.Builder(title)
+            builder.block()
+            cover = builder.build()
+        }
+
+        fun category(title: String, block: TweakCategory.Builder.() -> Unit) {
             val builder = TweakCategory.Builder(title)
             builder.block()
             categories.add(builder.build())
         }
 
-        internal fun build(): TweaksGraph = TweaksGraph(categories)
+        internal fun build(): TweaksGraph = TweaksGraph(cover, categories)
     }
 }
 
@@ -31,7 +38,7 @@ data class TweakCategory(val title: String, val groups: List<TweakGroup>) {
     class Builder(private val title: String) {
         private val groups = mutableListOf<TweakGroup>()
 
-        fun tweakGroup(title: String, block: TweakGroup.Builder.() -> Unit) {
+        fun group(title: String, block: TweakGroup.Builder.() -> Unit) {
             val builder = TweakGroup.Builder(title)
             builder.block()
             groups.add(builder.build())
