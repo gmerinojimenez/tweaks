@@ -30,6 +30,9 @@ override fun onCreate() {
 where `demoTweakGraph` is the structure you want to be rendered:
 ```kotlin
         private fun demoTweakGraph() = tweaksGraph {
+            cover("Tweaks Demo") {
+                label("cover-key", "Current user ID:") { flow { emit("1")} }
+            }
             tweakCategory("Screen 1") {
                 tweakGroup("Group 1") {
                     label(
