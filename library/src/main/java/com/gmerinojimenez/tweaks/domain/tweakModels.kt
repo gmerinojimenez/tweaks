@@ -46,8 +46,88 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
     class Builder(private val title: String) {
         private val entries = mutableListOf<TweakEntry<*>>()
 
-        fun addEntry(entry: TweakEntry<*>) {
+        fun tweak(entry: TweakEntry<*>) {
             entries.add(entry)
+        }
+
+        fun button(
+            key: String,
+            name: String,
+            action: () -> Unit,
+        ) {
+            tweak(ButtonTweakEntry(key, name, action))
+        }
+
+        fun label(
+            key: String,
+            name: String,
+            value: () -> Flow<String>,
+        ) {
+            tweak(ReadOnlyStringTweakEntry(key, name, value()))
+        }
+
+        fun editableString(
+            key: String,
+            name: String,
+            defaultValue: Flow<String>? = null,
+        ) {
+            tweak(EditableStringTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableString(
+            key: String,
+            name: String,
+            defaultValue: String,
+        ) {
+            tweak(EditableStringTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableBoolean(
+            key: String,
+            name: String,
+            defaultValue: Flow<Boolean>? = null,
+        ) {
+            tweak(EditableBooleanTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableBoolean(
+            key: String,
+            name: String,
+            defaultValue: Boolean,
+        ) {
+            tweak(EditableBooleanTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableInt(
+            key: String,
+            name: String,
+            defaultValue: Flow<Int>? = null,
+        ) {
+            tweak(EditableIntTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableInt(
+            key: String,
+            name: String,
+            defaultValue: Int,
+        ) {
+            tweak(EditableIntTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableLong(
+            key: String,
+            name: String,
+            defaultValue: Flow<Long>? = null,
+        ) {
+            tweak(EditableLongTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableLong(
+            key: String,
+            name: String,
+            defaultValue: Long,
+        ) {
+            tweak(EditableLongTweakEntry(key, name, defaultValue))
         }
 
         internal fun build(): TweakGroup = TweakGroup(title, entries)
@@ -57,7 +137,8 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
 sealed class TweakEntry<T>(val key: String, val name: String)
 
 /** A button, with a customizable action*/
-class ButtonTweakEntry(key: String, name: String, val action: () -> Unit): TweakEntry<Unit>(key, name)
+class ButtonTweakEntry(key: String, name: String, val action: () -> Unit) :
+    TweakEntry<Unit>(key, name)
 
 /** A non editable entry */
 class ReadOnlyStringTweakEntry(key: String, name: String, override val value: Flow<String>) :
