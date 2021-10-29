@@ -28,6 +28,7 @@ import com.gmerinojimenez.tweaks.domain.*
 fun TweaksScreen(
     tweaksGraph: TweaksGraph,
     onCategoryButtonClicked: (TweakCategory) -> Unit,
+    onNavigationEvent: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -37,7 +38,7 @@ fun TweaksScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         tweaksGraph.cover?.let {
-            TweakGroupBody(tweakGroup = it)
+            TweakGroupBody(tweakGroup = it, onNavigationEvent = onNavigationEvent)
         }
         tweaksGraph.categories.forEach { category ->
             Button(
@@ -52,6 +53,7 @@ fun TweaksScreen(
 @Composable
 fun TweaksCategoryScreen(
     tweakCategory: TweakCategory,
+    onNavigationEvent: (String) -> Unit,
 ) {
     Column(
         modifier = Modifier
@@ -63,7 +65,7 @@ fun TweaksCategoryScreen(
         Text(tweakCategory.title, style = MaterialTheme.typography.h4)
 
         tweakCategory.groups.forEach { group ->
-            TweakGroupBody(tweakGroup = group)
+            TweakGroupBody(tweakGroup = group, onNavigationEvent = onNavigationEvent)
         }
     }
 }
@@ -71,6 +73,7 @@ fun TweaksCategoryScreen(
 @Composable
 fun TweakGroupBody(
     tweakGroup: TweakGroup,
+    onNavigationEvent: (String) -> Unit,
 ) {
     Card(
         elevation = 3.dp
@@ -89,6 +92,7 @@ fun TweakGroupBody(
                     is EditableLongTweakEntry -> EditableLongTweakEntryBody(entry, EditableTweakEntryViewModel())
                     is ReadOnlyStringTweakEntry -> ReadOnlyStringTweakEntryBody(entry, ReadOnlyTweakEntryViewModel())
                     is ButtonTweakEntry -> TweakButton(entry)
+                    is RouteButtonTweakEntry -> TweakNavigableButton(entry, onNavigationEvent)
                 }
             }
         }
@@ -99,6 +103,19 @@ fun TweakGroupBody(
 fun TweakButton(entry: ButtonTweakEntry) {
     Button(
         onClick = entry.action,
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        Text(entry.name)
+    }
+}
+
+@Composable
+fun TweakNavigableButton(
+    entry: RouteButtonTweakEntry,
+    onClick: (String) -> Unit
+) {
+    Button(
+        onClick = { onClick(entry.route) },
         modifier = Modifier.fillMaxWidth(),
     ) {
         Text(entry.name)

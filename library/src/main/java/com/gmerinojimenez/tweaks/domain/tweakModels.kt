@@ -65,6 +65,14 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
             tweak(ButtonTweakEntry(key, name, action))
         }
 
+        fun routeButton(
+            key: String,
+            name: String,
+            route: String,
+        ) {
+            tweak(RouteButtonTweakEntry(key, name, route))
+        }
+
         fun label(
             key: String,
             name: String,
@@ -145,6 +153,10 @@ sealed class TweakEntry<T>(val key: String, val name: String)
 
 /** A button, with a customizable action*/
 class ButtonTweakEntry(key: String, name: String, val action: () -> Unit) :
+    TweakEntry<Unit>(key, name)
+
+/** A button, that when tapped navigates to a route*/
+class RouteButtonTweakEntry(key: String, name: String, val route: String) :
     TweakEntry<Unit>(key, name)
 
 /** A non editable entry */

@@ -1,6 +1,7 @@
 package com.gmerinojimenez.tweaks
 
 import android.app.Application
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -65,8 +66,14 @@ class Tweaks {
 
 fun NavGraphBuilder.addTweakGraph(
     navController: NavController,
+    customComposableScreens: NavGraphBuilder.() -> Unit = {}
 ) {
     val tweaksGraph = Tweaks.getReference().tweaksBusinessLogic.tweaksGraph
+
+    val onNavigationEvent: (String) -> Unit = { route ->
+        navController.navigate(route)
+    }
+
     navigation(
         startDestination = TWEAK_MAIN_SCREEN,
         route = TWEAKS_NAVIGATION_ENTRYPOINT,
@@ -75,14 +82,20 @@ fun NavGraphBuilder.addTweakGraph(
         composable(TWEAK_MAIN_SCREEN) {
             TweaksScreen(
                 tweaksGraph = tweaksGraph,
-                onCategoryButtonClicked = { navController.navigate(it.navigationRoute()) })
+                onCategoryButtonClicked = { navController.navigate(it.navigationRoute())},
+                onNavigationEvent = onNavigationEvent,
+            )
         }
 
         tweaksGraph.categories.forEach { category ->
             composable(category.navigationRoute()) {
-                TweaksCategoryScreen(tweakCategory = category)
+                TweaksCategoryScreen(
+                    tweakCategory = category,
+                    onNavigationEvent = onNavigationEvent,
+                )
             }
         }
+        customComposableScreens()
     }
 }
 
