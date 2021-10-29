@@ -109,7 +109,134 @@ And then, in your NavHost setup, use the extension function `NavGraphBuilder.add
     }
 ```
 
-Please review the app module for configuration examples. Check the available nodes in the graph [here](https://github.com/gmerinojimenez/tweaks/blob/main/library/src/enabled/java/com/gmerino/tweak/domain/tweakModels.kt)
+## How to build the TweaksGraph
+You can use the DSL to create your own graph. Please note that a graph is composed by:
+* A main group of tweaks (*Optional*)
+* A list of categories
+
+The categories are separate screens and are composed of groups of tweaks. You can use each category to separate debug elements of your app by feature or key components, for example: (chat, webviews, login, stats, etc...)
+
+The group of tweaks are a shown inside each category screen, they are composed of tweaks and can represent configuration settings that can be grouped together, for example: endpoints of your API.
+
+And finally, the tweaks are the configurable elements. Currently we support these ones:
+
+```kotlin
+button(
+    key: String,
+    name: String,
+    action: () -> Unit
+)
+```
+Used to display a button that performs an action
+
+```kotlin
+fun routeButton(
+    key: String,
+    name: String,
+    route: String,
+)
+```
+Similar, but this button navigates directly to a route of the NavHost, check [custom screens section](#custom-screens) for more info
+
+
+
+```kotlin
+fun label(
+    key: String,
+    name: String,
+    value: () -> Flow<String>,
+)
+```
+A non editable text
+
+```kotlin
+fun editableString(
+    key: String,
+    name: String,
+    defaultValue: Flow<String>? = null,
+)
+```
+
+```kotlin
+fun editableString(
+    key: String,
+    name: String,
+    defaultValue: String,
+)
+```
+
+An editable text
+
+```kotlin
+fun editableBoolean(
+    key: String,
+    name: String,
+    defaultValue: Flow<Boolean>? = null,
+)
+```
+
+```kotlin
+fun editableBoolean(
+    key: String,
+    name: String,
+    defaultValue: Boolean,
+)
+```
+An editable boolean 
+```kotlin
+fun editableInt(
+    key: String,
+    name: String,
+    defaultValue: Flow<Int>? = null,
+)
+```
+
+```kotlin
+fun editableInt(
+    key: String,
+    name: String,
+    defaultValue: Int,
+) 
+```
+An editable Int
+```kotlin
+fun editableLong(
+    key: String,
+    name: String,
+    defaultValue: Flow<Long>? = null,
+)
+```
+
+```kotlin
+fun editableLong(
+    key: String,
+    name: String,
+    defaultValue: Long,
+)
+```
+An editable Long
+
+Please review the app module for configuration examples. 
+
+## Custom screens:
+You can add your custom screens to the TweaksGraph by using the `customComposableScreens` parameter of `addTweakGraph` function, for example:
+```kotlin
+addTweakGraph(
+    navController = navController,
+) {
+    composable(route = "custom-screen") {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Text("Custom screen")
+        }
+    }
+}
+```
 
 ## Special thanks to contributors:
 * [Yamal Al Mahamid](https://github.com/yamal-coding)
