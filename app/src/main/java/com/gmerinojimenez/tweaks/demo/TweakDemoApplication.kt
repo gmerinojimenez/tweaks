@@ -64,6 +64,12 @@ class TweakDemoApplication : Application() {
                     Toast.makeText(this@TweakDemoApplication, "Demo button", Toast.LENGTH_LONG)
                         .show()
                 }
+
+                routeButton(
+                    key = "button2",
+                    name = "Custom screen button",
+                    route = "custom-screen"
+                )
             }
         }
     }
