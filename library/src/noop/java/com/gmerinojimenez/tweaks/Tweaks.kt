@@ -58,6 +58,6 @@ class Tweaks {
 
 fun NavGraphBuilder.addTweakGraph(
     navController: NavController,
+    customComposableScreens: NavGraphBuilder.() -> Unit = {}
 ) {
-
 }
