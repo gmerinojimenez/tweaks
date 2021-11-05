@@ -61,3 +61,7 @@ fun NavGraphBuilder.addTweakGraph(
     customComposableScreens: NavGraphBuilder.() -> Unit = {}
 ) {
 }
+
+@Composable
+fun NavController.navigateToTweaksOnShake() {
+}
