@@ -60,11 +60,6 @@ class Tweaks {
             inject(application)
 
             reference!!.initializeGraph(tweaksGraph)
-
-            val sensorManager = application.getSystemService(Context.SENSOR_SERVICE)
-            val shakeDetector = ShakeDetector {
-
-            }
         }
 
         @JvmStatic
