@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.gmerinojimenez.tweaks.demo.theme.DebugTweaksTheme
 import com.gmerinojimenez.tweaks.addTweakGraph
+import com.gmerinojimenez.tweaks.navigateToTweaksOnShake
 
 class MainActivity : ComponentActivity() {
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DebugTweaksTheme {
                 val navController = rememberNavController()
-
+                navController.navigateToTweaksOnShake()
                 Surface(color = MaterialTheme.colors.background) {
                     Scaffold { innerPadding ->
                         DemoNavHost(

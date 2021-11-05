@@ -1,14 +1,26 @@
 package com.gmerinojimenez.tweaks
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Application
+import android.content.Context
+import android.content.pm.PackageManager
+import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_NORMAL
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.gmerinojimenez.tweaks.Tweaks.Companion.TWEAKS_NAVIGATION_ENTRYPOINT
-import com.gmerinojimenez.tweaks.di.TweaksComponent
 import com.gmerinojimenez.tweaks.di.DaggerTweaksComponent
+import com.gmerinojimenez.tweaks.di.TweaksComponent
 import com.gmerinojimenez.tweaks.di.TweaksModule
 import com.gmerinojimenez.tweaks.domain.Constants.TWEAK_MAIN_SCREEN
 import com.gmerinojimenez.tweaks.domain.TweakCategory
@@ -17,8 +29,10 @@ import com.gmerinojimenez.tweaks.domain.TweaksBusinessLogic
 import com.gmerinojimenez.tweaks.domain.TweaksGraph
 import com.gmerinojimenez.tweaks.ui.TweaksCategoryScreen
 import com.gmerinojimenez.tweaks.ui.TweaksScreen
+import com.squareup.seismic.ShakeDetector
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+
 
 class Tweaks {
 
@@ -46,6 +60,11 @@ class Tweaks {
             inject(application)
 
             reference!!.initializeGraph(tweaksGraph)
+
+            val sensorManager = application.getSystemService(Context.SENSOR_SERVICE)
+            val shakeDetector = ShakeDetector {
+
+            }
         }
 
         @JvmStatic
@@ -62,6 +81,37 @@ class Tweaks {
     }
 
 
+}
+
+@Composable
+fun NavController.navigateToTweaksOnShake() {
+    val context = LocalContext.current
+    val sensorManager: SensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+    LaunchedEffect(true) {
+        val shakeDetector = ShakeDetector {
+            vibrateIfAble(context)
+            navigate(TWEAKS_NAVIGATION_ENTRYPOINT)
+        }
+        shakeDetector.start(sensorManager, SENSOR_DELAY_NORMAL)
+    }
+}
+
+@SuppressLint("MissingPermission")
+private fun vibrateIfAble(context: Context) {
+    if (ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.VIBRATE
+        ) == PackageManager.PERMISSION_GRANTED
+    ) {
+        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (vibrator.hasVibrator()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(200, 100))
+            } else {
+                vibrator.vibrate(200)
+            }
+        }
+    }
 }
 
 fun NavGraphBuilder.addTweakGraph(
