@@ -1,6 +1,7 @@
 package com.gmerinojimenez.tweaks
 
 import android.app.Application
+import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.gmerinojimenez.tweaks.domain.*
@@ -59,9 +60,7 @@ class Tweaks {
 fun NavGraphBuilder.addTweakGraph(
     navController: NavController,
     customComposableScreens: NavGraphBuilder.() -> Unit = {}
-) {
-}
+) {}
 
 @Composable
-fun NavController.navigateToTweaksOnShake() {
-}
+fun NavController.navigateToTweaksOnShake() {}
