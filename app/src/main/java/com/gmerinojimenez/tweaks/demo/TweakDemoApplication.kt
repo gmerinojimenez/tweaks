@@ -4,8 +4,11 @@ import android.app.Application
 import android.widget.Toast
 import com.gmerinojimenez.tweaks.Tweaks
 import com.gmerinojimenez.tweaks.domain.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 
 class TweakDemoApplication : Application() {
     override fun onCreate() {
@@ -13,11 +16,20 @@ class TweakDemoApplication : Application() {
         Tweaks.init(this@TweakDemoApplication, demoTweakGraph())
     }
 
-    var counter = 0
+    var timestampState = MutableStateFlow("0")
+
+    init {
+        CoroutineScope(Dispatchers.Default).launch {
+            while (true) {
+                timestampState.value = "${System.currentTimeMillis() / 1000}"
+                delay(1000)
+            }
+        }
+    }
 
     private fun demoTweakGraph() = tweaksGraph {
         cover("Tweaks Demo") {
-            label("cover-key", "Current user ID:") { flow { emit("1")} }
+            label("cover-key", "Current user ID:") { MutableStateFlow("1") }
         }
         category("Screen 1") {
             group("Group 1") {
@@ -25,12 +37,7 @@ class TweakDemoApplication : Application() {
                     key = "timestamp",
                     name = "Current timestamp",
                 ) {
-                    flow {
-                        while (true) {
-                            emit("${System.currentTimeMillis() / 1000}")
-                            delay(1000)
-                        }
-                    }
+                    timestampState
                 }
                 editableString(
                     key = "value1",
@@ -39,17 +46,6 @@ class TweakDemoApplication : Application() {
                 editableBoolean(
                     key = "value2",
                     name = "Value 2",
-                )
-                editableInt(
-                    key = "value3",
-                    name = "Value 3",
-                    defaultValue = flow {
-                        while (true) {
-                            counter += 1
-                            emit(counter)
-                            delay(1000)
-                        }
-                    }
                 )
                 editableLong(
                     key = "value4",
