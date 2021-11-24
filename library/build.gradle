@@ -59,7 +59,7 @@ dependencies {
     enabledImplementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
     enabledImplementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.0'
     enabledImplementation 'androidx.activity:activity-compose:1.4.0'
-    enabledImplementation 'com.squareup:seismic:1.0.3'
+    enabledApi 'com.squareup:seismic:1.0.3'
     enabledImplementation "androidx.datastore:datastore-preferences:1.0.0"
 
     //Dagger
