@@ -2,6 +2,8 @@ package com.gmerinojimenez.tweaks.domain
 
 import androidx.datastore.preferences.core.*
 import com.gmerinojimenez.tweaks.data.TweaksDataStore
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -48,24 +50,29 @@ class TweaksBusinessLogic @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(key: String): Flow<T?> {
+    fun <T> getValue(key: String): StateFlow<T?> {
         val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
         return getValue(tweakEntry)
     }
 
-    fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
+    fun <T> getValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
         is Editable<*> -> getEditableValue(entry)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun <T> getEditableValue(entry: TweakEntry<T>): Flow<T?> {
+    private fun <T> getEditableValue(entry: TweakEntry<T>): StateFlow<T?> {
         val editableCasted = entry as Editable<T>
-        val defaultValue = editableCasted.defaultValue
-        return defaultValue?.combine(getFromStorage(entry)) { default, storage ->
-            storage ?: default
-        }
-            ?: getFromStorage(entry)
+        val defaultValueFlow: StateFlow<T>? = editableCasted.defaultValue
+        val initialValue = defaultValueFlow?.value
+
+        val mergedFlow: Flow<T?> = if (defaultValueFlow != null) merge(getFromStorage(entry), defaultValueFlow) else getFromStorage(entry)
+
+        return mergedFlow.stateIn(
+            scope = CoroutineScope(Dispatchers.Default),
+            started = SharingStarted.Lazily,
+            initialValue = initialValue
+        )
     }
 
     private fun <T> getFromStorage(entry: TweakEntry<T>) =
