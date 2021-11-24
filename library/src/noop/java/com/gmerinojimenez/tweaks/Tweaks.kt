@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import com.gmerinojimenez.tweaks.domain.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class Tweaks {
 
@@ -14,15 +14,15 @@ class Tweaks {
     private val keyToEntryValueMap: MutableMap<String, TweakEntry<*>> = mutableMapOf()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getTweakValue(key: String): Flow<T?> {
+    fun <T> getTweakValue(key: String): StateFlow<T?> {
         val entry= keyToEntryValueMap[key] as TweakEntry<T>
         return getTweakValue(entry)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getTweakValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
+    fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
-        is Editable<*> -> (entry as Editable<T>).defaultValue ?: flow { emit(null) }
+        is Editable<*> -> (entry as Editable<T>).defaultValue ?: MutableStateFlow(null)
     }
 
     private fun initialize(tweaksGraph: TweaksGraph) {
