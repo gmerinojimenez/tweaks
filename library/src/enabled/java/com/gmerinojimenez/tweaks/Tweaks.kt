@@ -34,14 +34,14 @@ import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 
 
-class Tweaks {
+open class Tweaks {
 
     @Inject
     internal lateinit var tweaksBusinessLogic: TweaksBusinessLogic
 
-    fun <T>getTweakValue(key: String): StateFlow<T?> = tweaksBusinessLogic.getValue(key)
-    
-    fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = tweaksBusinessLogic.getValue(entry)
+    open fun <T>getTweakValue(key: String): StateFlow<T?> = tweaksBusinessLogic.getValue(key)
+
+    open fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = tweaksBusinessLogic.getValue(entry)
 
     private fun initializeGraph(tweaksGraph: TweaksGraph) {
         tweaksBusinessLogic.initialize(tweaksGraph)
@@ -49,8 +49,8 @@ class Tweaks {
 
     companion object {
         const val TWEAKS_NAVIGATION_ENTRYPOINT = "tweaks"
-        private var reference: Tweaks? = null
-        internal lateinit var component: TweaksComponent
+        private var reference: Tweaks = Tweaks()
+        private lateinit var component: TweaksComponent
 
         fun init(
             application: Application,
@@ -59,11 +59,11 @@ class Tweaks {
             reference = Tweaks()
             inject(application)
 
-            reference!!.initializeGraph(tweaksGraph)
+            reference.initializeGraph(tweaksGraph)
         }
 
         @JvmStatic
-        fun getReference() = reference!!
+        fun getReference(): Tweaks = reference
 
         private fun inject(application: Application) {
             component = DaggerTweaksComponent
@@ -71,7 +71,7 @@ class Tweaks {
                 .tweaksModule(TweaksModule(application))
                 .build()
 
-            component.inject(reference!!)
+            component.inject(reference)
         }
     }
 

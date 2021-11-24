@@ -8,19 +8,18 @@ import com.gmerinojimenez.tweaks.domain.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class Tweaks {
+open class Tweaks {
 
-    internal lateinit var tweaksGraph: TweaksGraph
     private val keyToEntryValueMap: MutableMap<String, TweakEntry<*>> = mutableMapOf()
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getTweakValue(key: String): StateFlow<T?> {
+    open fun <T> getTweakValue(key: String): StateFlow<T?> {
         val entry= keyToEntryValueMap[key] as TweakEntry<T>
         return getTweakValue(entry)
     }
 
     @Suppress("UNCHECKED_CAST")
-    fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
+    open fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
         is Editable<*> -> (entry as Editable<T>).defaultValue ?: MutableStateFlow(null)
     }
@@ -39,19 +38,17 @@ class Tweaks {
 
     companion object {
         const val TWEAKS_NAVIGATION_ENTRYPOINT = "tweaks"
-        private var reference: Tweaks? = null
+        private var reference: Tweaks = Tweaks()
 
         @JvmStatic
         fun init(
-            application: Application,
             tweaksGraph: TweaksGraph,
         ) {
-            reference = Tweaks()
-            reference!!.initialize(tweaksGraph)
+            reference.initialize(tweaksGraph)
         }
 
         @JvmStatic
-        fun getReference() = reference!!
+        fun getReference(): Tweaks = reference
     }
 
 
