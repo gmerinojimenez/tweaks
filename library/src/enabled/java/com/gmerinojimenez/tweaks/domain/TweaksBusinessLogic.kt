@@ -66,7 +66,15 @@ class TweaksBusinessLogic @Inject constructor(
         val defaultValueFlow: StateFlow<T>? = editableCasted.defaultValue
         val initialValue = defaultValueFlow?.value
 
-        val mergedFlow: Flow<T?> = if (defaultValueFlow != null) merge(getFromStorage(entry), defaultValueFlow) else getFromStorage(entry)
+        val mergedFlow: Flow<T?> = if (defaultValueFlow != null) {
+            merge(
+                getFromStorage(entry)
+                    .filter { it != null },
+                defaultValueFlow
+            )
+        } else {
+            getFromStorage(entry)
+        }
 
         return mergedFlow.stateIn(
             scope = CoroutineScope(Dispatchers.Default),

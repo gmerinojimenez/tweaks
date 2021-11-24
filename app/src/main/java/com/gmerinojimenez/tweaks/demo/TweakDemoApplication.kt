@@ -46,13 +46,13 @@ class TweakDemoApplication : Application() {
                 editableBoolean(
                     key = "value2",
                     name = "Value 2",
+                    defaultValue = true,
                 )
                 editableLong(
                     key = "value4",
                     name = "Value 4",
-                    defaultValue = 0L,
+                    defaultValue = 42L,
                 )
-
                 button(
                     key = "button1",
                     name = "Demo button"
