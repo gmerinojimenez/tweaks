@@ -87,16 +87,30 @@ class TweaksBusinessLogic @Inject constructor(
         tweaksDataStore.data
             .map { preferences -> preferences[buildKey(entry)] }
 
-    suspend fun <T> setValue(entry: TweakEntry<T>, value: T) {
+    suspend fun <T> setValue(entry: TweakEntry<T>, value: T?) {
         tweaksDataStore.edit {
-            it[buildKey(entry)] = value
+            if (value != null) {
+                it[buildKey(entry)] = value
+            } else {
+                it.remove(buildKey(entry))
+            }
         }
+    }
+
+    suspend fun <T> setValue(key: String, value: T?) {
+        val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
+        setValue(tweakEntry, value)
     }
 
     suspend fun <T> clearValue(entry: TweakEntry<T>) {
         tweaksDataStore.edit {
             it.remove(buildKey(entry))
         }
+    }
+
+    suspend fun <T> clearValue(key: String) {
+        val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
+        clearValue(tweakEntry)
     }
 
     @Suppress("UNCHECKED_CAST")

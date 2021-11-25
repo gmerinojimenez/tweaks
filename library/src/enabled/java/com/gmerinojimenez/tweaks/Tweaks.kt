@@ -43,6 +43,22 @@ open class Tweaks {
 
     open fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = tweaksBusinessLogic.getValue(entry)
 
+    open suspend fun <T> setTweakValue(key: String, value: T?) {
+        tweaksBusinessLogic.setValue(key, value)
+    }
+
+    open suspend fun <T> setTweakValue(entry: TweakEntry<T>, value: T?) {
+        tweaksBusinessLogic.setValue(entry, value)
+    }
+
+    open suspend fun <T> clearValue(entry: TweakEntry<T>) {
+        tweaksBusinessLogic.clearValue(entry)
+    }
+
+    open suspend fun <T> clearValue(key: String) {
+        tweaksBusinessLogic.clearValue<T>(key)
+    }
+
     private fun initializeGraph(tweaksGraph: TweaksGraph) {
         tweaksBusinessLogic.initialize(tweaksGraph)
     }

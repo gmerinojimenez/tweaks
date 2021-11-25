@@ -24,6 +24,18 @@ open class Tweaks {
         is Editable<*> -> (entry as Editable<T>).defaultValue ?: MutableStateFlow(null)
     }
 
+    open suspend fun <T> setTweakValue(key: String, value: T?) {
+    }
+
+    open suspend fun <T> setTweakValue(entry: TweakEntry<T>, value: T?) {
+    }
+
+    open suspend fun <T> clearValue(entry: TweakEntry<T>) {
+    }
+
+    open suspend fun <T> clearValue(key: String) {
+    }
+
     private fun initialize(tweaksGraph: TweaksGraph) {
         val allEntries: List<TweakEntry<*>> = tweaksGraph.categories
             .flatMap { category ->
