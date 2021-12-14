@@ -30,7 +30,7 @@ import com.gmerinojimenez.tweaks.domain.TweaksGraph
 import com.gmerinojimenez.tweaks.ui.TweaksCategoryScreen
 import com.gmerinojimenez.tweaks.ui.TweaksScreen
 import com.squareup.seismic.ShakeDetector
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 
@@ -39,9 +39,9 @@ open class Tweaks {
     @Inject
     internal lateinit var tweaksBusinessLogic: TweaksBusinessLogic
 
-    open fun <T>getTweakValue(key: String): StateFlow<T?> = tweaksBusinessLogic.getValue(key)
+    open fun <T>getTweakValue(key: String): Flow<T?> = tweaksBusinessLogic.getValue(key)
 
-    open fun <T> getTweakValue(entry: TweakEntry<T>): StateFlow<T?> = tweaksBusinessLogic.getValue(entry)
+    open fun <T> getTweakValue(entry: TweakEntry<T>): Flow<T?> = tweaksBusinessLogic.getValue(entry)
 
     open suspend fun <T> setTweakValue(key: String, value: T?) {
         tweaksBusinessLogic.setValue(key, value)

@@ -2,13 +2,13 @@ package com.gmerinojimenez.tweaks.domain
 
 import androidx.datastore.preferences.core.*
 import com.gmerinojimenez.tweaks.data.TweaksDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class TweaksBusinessLogic @Inject constructor(
     private val tweaksDataStore: TweaksDataStore,
@@ -49,38 +49,21 @@ class TweaksBusinessLogic @Inject constructor(
         alreadyIntroducedKeys.add(entry.key)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(key: String): StateFlow<T?> {
+    fun <T> getValue(key: String): Flow<T?> {
         val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
         return getValue(tweakEntry)
     }
 
-    fun <T> getValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
+    fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
         is Editable<*> -> getEditableValue(entry)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun <T> getEditableValue(entry: TweakEntry<T>): StateFlow<T?> {
+    private fun <T> getEditableValue(entry: TweakEntry<T>): Flow<T?> {
         val editableCasted = entry as Editable<T>
-        val defaultValueFlow: StateFlow<T>? = editableCasted.defaultValue
-        val initialValue = defaultValueFlow?.value
-
-        val mergedFlow: Flow<T?> = if (defaultValueFlow != null) {
-            merge(
-                getFromStorage(entry)
-                    .filter { it != null },
-                defaultValueFlow
-            )
-        } else {
-            getFromStorage(entry)
-        }
-
-        return mergedFlow.stateIn(
-            scope = CoroutineScope(Dispatchers.Default),
-            started = SharingStarted.Lazily,
-            initialValue = initialValue
-        )
+        val defaultValue = editableCasted.defaultValue
+        return getFromStorage(entry).map { it ?: defaultValue }
     }
 
     private fun <T> getFromStorage(entry: TweakEntry<T>) =
@@ -124,3 +107,9 @@ class TweaksBusinessLogic @Inject constructor(
         is RouteButtonTweakEntry -> throw java.lang.IllegalStateException("Buttons doesn't have keys")
     }
 }
+//
+//private class EditableTweakEntryState<T> (
+//    private val entry: TweakEntry<T>
+//) {
+//    private val state = MutableStateFlow(entry.)
+//}
