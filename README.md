@@ -2,8 +2,13 @@
 [![Version](https://maven-badges.herokuapp.com/maven-central/io.github.gmerinojimenez/tweaks/badge.png)](https://search.maven.org/artifact/io.github.gmerinojimenez/tweaks)
 [![Support](https://img.shields.io/badge/Support-%3E%3D%20Android%205.0-brightgreen)](https://github.com/Telefonica/mistica-android)
 
-# Tweaks
+<p align="center">
+<img src="https://user-images.githubusercontent.com/4595241/146578604-32454df7-6c15-456f-9939-7848464600e9.png" width="800" />
+</p>
+
 A customizable debug screen to view and edit flags that can be used for development in **Jetpack Compose** applications
+
+
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/4595241/138683112-93a58d0f-1365-4392-add1-a547f4308f22.gif" data-canonical-src="https://user-images.githubusercontent.com/4595241/138683112-93a58d0f-1365-4392-add1-a547f4308f22.gif" width="200" />
