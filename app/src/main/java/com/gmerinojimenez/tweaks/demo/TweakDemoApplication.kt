@@ -22,46 +22,46 @@ class TweakDemoApplication : Application() {
         }
     }
 
-    private fun demoTweakGraph() = tweaksGraph {
-        cover("Tweaks Demo") {
-            label("cover-key", "Current user ID:") { flowOf("1") }
-        }
-        category("Screen 1") {
-            group("Group 1") {
-                label(
-                    key = "timestamp",
-                    name = "Current timestamp",
-                ) {
-                    timestampState
-                }
-                editableString(
-                    key = "value1",
-                    name = "Value 1",
-                )
-                editableBoolean(
-                    key = "value2",
-                    name = "Value 2",
-                    defaultValue = true,
-                )
-                editableLong(
-                    key = "value4",
-                    name = "Value 4",
-                    defaultValue = 42L,
-                )
-                button(
-                    key = "button1",
-                    name = "Demo button"
-                ) {
-                    Toast.makeText(this@TweakDemoApplication, "Demo button", Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                routeButton(
-                    key = "button2",
-                    name = "Custom screen button",
-                    route = "custom-screen"
-                )
+private fun demoTweakGraph() = tweaksGraph {
+    cover("Tweaks Demo") {
+        label("cover-key", "Current user ID:") { flowOf("1") }
+    }
+    category("Screen 1") {
+        group("Group 1") {
+            label(
+                key = "timestamp",
+                name = "Current timestamp",
+            ) {
+                timestampState
             }
+            editableString(
+                key = "value1",
+                name = "Value 1",
+            )
+            editableBoolean(
+                key = "value2",
+                name = "Value 2",
+                defaultValue = true,
+            )
+            editableLong(
+                key = "value4",
+                name = "Value 4",
+                defaultValue = 42L,
+            )
+            button(
+                key = "button1",
+                name = "Demo button"
+            ) {
+                Toast.makeText(this@TweakDemoApplication, "Demo button", Toast.LENGTH_LONG)
+                    .show()
+            }
+
+            routeButton(
+                key = "button2",
+                name = "Custom screen button",
+                route = "custom-screen"
+            )
         }
     }
+}
 }

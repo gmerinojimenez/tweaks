@@ -1,6 +1,7 @@
 package com.gmerinojimenez.tweaks.domain
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 
 fun tweaksGraph(block: TweaksGraph.Builder.() -> Unit): TweaksGraph {
     val builder = TweaksGraph.Builder()
@@ -83,7 +84,15 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableString(
             key: String,
             name: String,
-            defaultValue: String? = null,
+            defaultValue: Flow<String> = flowOf(),
+        ) {
+            tweak(EditableStringTweakEntry(key, name, defaultValue))
+        }
+
+        fun editableString(
+            key: String,
+            name: String,
+            defaultValue: String,
         ) {
             tweak(EditableStringTweakEntry(key, name, defaultValue))
         }
@@ -91,7 +100,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableBoolean(
             key: String,
             name: String,
-            defaultValue: Boolean? = null,
+            defaultValue: Flow<Boolean> = flowOf(),
         ) {
             tweak(EditableBooleanTweakEntry(key, name, defaultValue))
         }
@@ -107,7 +116,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableInt(
             key: String,
             name: String,
-            defaultValue: Int? = null,
+            defaultValue: Flow<Int> = flowOf(),
         ) {
             tweak(EditableIntTweakEntry(key, name, defaultValue))
         }
@@ -123,7 +132,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableLong(
             key: String,
             name: String,
-            defaultValue: Long? = null,
+            defaultValue: Flow<Long> = flowOf(),
         ) {
             tweak(EditableLongTweakEntry(key, name, defaultValue))
         }
@@ -158,33 +167,57 @@ class ReadOnlyStringTweakEntry(key: String, name: String, override val value: Fl
 class EditableStringTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: String? = null,
-) : TweakEntry<String>(key, name), Editable<String>
+    override val defaultValue: Flow<String> = flowOf(),
+) : TweakEntry<String>(key, name), Editable<String> {
+    constructor(
+        key: String,
+        name: String,
+        defaultUniqueValue: String,
+    ) : this(key, name, flowOf(defaultUniqueValue))
+}
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableBooleanTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: Boolean? = null,
-) : TweakEntry<Boolean>(key, name), Editable<Boolean>
+    override val defaultValue: Flow<Boolean> = flowOf(),
+) : TweakEntry<Boolean>(key, name), Editable<Boolean> {
+    constructor(
+        key: String,
+        name: String,
+        defaultUniqueValue: Boolean,
+    ) : this(key, name, flowOf(defaultUniqueValue))
+}
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableIntTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: Int? = null,
-) : TweakEntry<Int>(key, name), Editable<Int>
+    override val defaultValue: Flow<Int> = flowOf(),
+) : TweakEntry<Int>(key, name), Editable<Int> {
+    constructor(
+        key: String,
+        name: String,
+        defaultUniqueValue: Int,
+    ) : this(key, name, flowOf(defaultUniqueValue))
+}
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableLongTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: Long? = null,
-) : TweakEntry<Long>(key, name), Editable<Long>
+    override val defaultValue: Flow<Long> = flowOf(),
+) : TweakEntry<Long>(key, name), Editable<Long> {
+    constructor(
+        key: String,
+        name: String,
+        defaultUniqueValue: Long,
+    ) : this(key, name, flowOf(defaultUniqueValue))
+}
 
 sealed interface Modifiable
 interface Editable<T> : Modifiable {
-    val defaultValue: T?
+    val defaultValue: Flow<T>
 }
 
 interface ReadOnly<T> : Modifiable {

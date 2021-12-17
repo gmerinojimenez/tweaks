@@ -5,7 +5,10 @@
 # Tweaks
 A customizable debug screen to view and edit flags that can be used for development in **Jetpack Compose** applications
 
+<p align="center">
 <img src="https://user-images.githubusercontent.com/4595241/138683112-93a58d0f-1365-4392-add1-a547f4308f22.gif" data-canonical-src="https://user-images.githubusercontent.com/4595241/138683112-93a58d0f-1365-4392-add1-a547f4308f22.gif" width="200" />
+</p>
+
 
 To include the library add to your app's `build.gradle`:
 
@@ -31,7 +34,7 @@ where `demoTweakGraph` is the structure you want to be rendered:
 ```kotlin
 private fun demoTweakGraph() = tweaksGraph {
     cover("Tweaks Demo") {
-        label("cover-key", "Current user ID:") { flow { emit("1")} }
+        label("cover-key", "Current user ID:") { flowOf("1") }
     }
     category("Screen 1") {
         group("Group 1") {
@@ -39,12 +42,7 @@ private fun demoTweakGraph() = tweaksGraph {
                 key = "timestamp",
                 name = "Current timestamp",
             ) {
-                flow {
-                    while (true) {
-                        emit("${System.currentTimeMillis() / 1000}")
-                        delay(1000)
-                    }
-                }
+                timestampState
             }
             editableString(
                 key = "value1",
@@ -53,24 +51,13 @@ private fun demoTweakGraph() = tweaksGraph {
             editableBoolean(
                 key = "value2",
                 name = "Value 2",
-            )
-            editableInt(
-                key = "value3",
-                name = "Value 3",
-                defaultValue = flow {
-                    while (true) {
-                        counter += 1
-                        emit(counter)
-                        delay(1000)
-                    }
-                }
+                defaultValue = true,
             )
             editableLong(
                 key = "value4",
                 name = "Value 4",
-                defaultValue = 0L,
+                defaultValue = 42L,
             )
-
             button(
                 key = "button1",
                 name = "Demo button"
@@ -237,6 +224,17 @@ addTweakGraph(
     }
 }
 ```
+
+## Shake gesture support:
+The tweaks can be opened when the user shakes the device, to do this you need to add to your navigation controller:
+```kotlin
+navController.navigateToTweaksOnShake()
+```
+And also, optionally
+```xml
+<uses-permission android:name="android.permission.VIBRATE" />
+```
+to your `AndroidManifest.xml`
 
 ## Special thanks to contributors:
 * [Yamal Al Mahamid](https://github.com/yamal-coding)
