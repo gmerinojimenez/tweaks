@@ -1,6 +1,9 @@
-[![Platform](https://img.shields.io/badge/Platform-Android-brightgreen)](https://github.com/gmerinojimenez/tweaks)
-[![Version](https://maven-badges.herokuapp.com/maven-central/io.github.gmerinojimenez/tweaks/badge.png)](https://search.maven.org/artifact/io.github.gmerinojimenez/tweaks)
-[![Support](https://img.shields.io/badge/Support-%3E%3D%20Android%205.0-brightgreen)](https://github.com/Telefonica/mistica-android)
+
+<p align="center">
+<img src="https://img.shields.io/badge/Platform-Android-brightgreen" />
+<img src="https://maven-badges.herokuapp.com/maven-central/io.github.gmerinojimenez/tweaks/badge.png" />
+<img src="https://img.shields.io/badge/Support-%3E%3D%20Android%205.0-brightgreen" />
+</p>
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/4595241/146578604-32454df7-6c15-456f-9939-7848464600e9.png" width="800" />
