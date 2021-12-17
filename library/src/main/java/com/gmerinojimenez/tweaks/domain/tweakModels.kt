@@ -1,9 +1,7 @@
 package com.gmerinojimenez.tweaks.domain
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 
 fun tweaksGraph(block: TweaksGraph.Builder.() -> Unit): TweaksGraph {
     val builder = TweaksGraph.Builder()
@@ -78,7 +76,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun label(
             key: String,
             name: String,
-            value: () -> StateFlow<String>,
+            value: () -> Flow<String>,
         ) {
             tweak(ReadOnlyStringTweakEntry(key, name, value()))
         }
@@ -86,7 +84,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableString(
             key: String,
             name: String,
-            defaultValue: StateFlow<String>? = null,
+            defaultValue: Flow<String> = flowOf(),
         ) {
             tweak(EditableStringTweakEntry(key, name, defaultValue))
         }
@@ -102,7 +100,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableBoolean(
             key: String,
             name: String,
-            defaultValue: StateFlow<Boolean>? = null,
+            defaultValue: Flow<Boolean> = flowOf(),
         ) {
             tweak(EditableBooleanTweakEntry(key, name, defaultValue))
         }
@@ -118,7 +116,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableInt(
             key: String,
             name: String,
-            defaultValue: StateFlow<Int>? = null,
+            defaultValue: Flow<Int> = flowOf(),
         ) {
             tweak(EditableIntTweakEntry(key, name, defaultValue))
         }
@@ -134,7 +132,7 @@ data class TweakGroup(val title: String, val entries: List<TweakEntry<*>>) {
         fun editableLong(
             key: String,
             name: String,
-            defaultValue: StateFlow<Long>? = null,
+            defaultValue: Flow<Long> = flowOf(),
         ) {
             tweak(EditableLongTweakEntry(key, name, defaultValue))
         }
@@ -162,68 +160,68 @@ class RouteButtonTweakEntry(key: String, name: String, val route: String) :
     TweakEntry<Unit>(key, name)
 
 /** A non editable entry */
-class ReadOnlyStringTweakEntry(key: String, name: String, override val value: StateFlow<String>) :
+class ReadOnlyStringTweakEntry(key: String, name: String, override val value: Flow<String>) :
     TweakEntry<String>(key, name), ReadOnly<String>
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableStringTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: StateFlow<String>? = null,
+    override val defaultValue: Flow<String> = flowOf(),
 ) : TweakEntry<String>(key, name), Editable<String> {
     constructor(
         key: String,
         name: String,
         defaultUniqueValue: String,
-    ) : this(key, name, MutableStateFlow(defaultUniqueValue))
+    ) : this(key, name, flowOf(defaultUniqueValue))
 }
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableBooleanTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: StateFlow<Boolean>? = null,
+    override val defaultValue: Flow<Boolean> = flowOf(),
 ) : TweakEntry<Boolean>(key, name), Editable<Boolean> {
     constructor(
         key: String,
         name: String,
         defaultUniqueValue: Boolean,
-    ) : this(key, name, MutableStateFlow(defaultUniqueValue))
+    ) : this(key, name, flowOf(defaultUniqueValue))
 }
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableIntTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: StateFlow<Int>? = null,
+    override val defaultValue: Flow<Int> = flowOf(),
 ) : TweakEntry<Int>(key, name), Editable<Int> {
     constructor(
         key: String,
         name: String,
         defaultUniqueValue: Int,
-    ) : this(key, name, MutableStateFlow(defaultUniqueValue))
+    ) : this(key, name, flowOf(defaultUniqueValue))
 }
 
 /** An editable entry. It can be modified by using long-press*/
 class EditableLongTweakEntry(
     key: String,
     name: String,
-    override val defaultValue: StateFlow<Long>? = null,
+    override val defaultValue: Flow<Long> = flowOf(),
 ) : TweakEntry<Long>(key, name), Editable<Long> {
     constructor(
         key: String,
         name: String,
         defaultUniqueValue: Long,
-    ) : this(key, name, MutableStateFlow(defaultUniqueValue))
+    ) : this(key, name, flowOf(defaultUniqueValue))
 }
 
 sealed interface Modifiable
 interface Editable<T> : Modifiable {
-    val defaultValue: StateFlow<T>?
+    val defaultValue: Flow<T>
 }
 
 interface ReadOnly<T> : Modifiable {
-    val value: StateFlow<T>
+    val value: Flow<T>
 }
 
 internal object Constants {

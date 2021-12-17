@@ -2,13 +2,15 @@ package com.gmerinojimenez.tweaks.domain
 
 import androidx.datastore.preferences.core.*
 import com.gmerinojimenez.tweaks.data.TweaksDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class TweaksBusinessLogic @Inject constructor(
     private val tweaksDataStore: TweaksDataStore,
@@ -40,48 +42,42 @@ class TweaksBusinessLogic @Inject constructor(
 
     private fun checkIfRepeatedKey(
         alreadyIntroducedKeys: MutableSet<String>,
-        entry: TweakEntry<*>
+        entry: TweakEntry<*>,
     ) {
         if (alreadyIntroducedKeys.contains(entry.key)) {
-            throw IllegalStateException("There is a repeated key in the tweaks, review your graph")
+            throw IllegalStateException("There is a repeated key in the tweaks: ${entry.key}, review your graph")
         }
 
         alreadyIntroducedKeys.add(entry.key)
     }
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T> getValue(key: String): StateFlow<T?> {
+    fun <T> getValue(key: String): Flow<T?> {
         val tweakEntry = keyToEntryValueMap[key] as TweakEntry<T>
         return getValue(tweakEntry)
     }
 
-    fun <T> getValue(entry: TweakEntry<T>): StateFlow<T?> = when (entry as Modifiable) {
+    fun <T> getValue(entry: TweakEntry<T>): Flow<T?> = when (entry as Modifiable) {
         is ReadOnly<*> -> (entry as ReadOnly<T>).value
         is Editable<*> -> getEditableValue(entry)
     }
 
+    @FlowPreview
     @OptIn(ExperimentalCoroutinesApi::class)
-    private fun <T> getEditableValue(entry: TweakEntry<T>): StateFlow<T?> {
+    private fun <T> getEditableValue(entry: TweakEntry<T>): Flow<T?> {
         val editableCasted = entry as Editable<T>
-        val defaultValueFlow: StateFlow<T>? = editableCasted.defaultValue
-        val initialValue = defaultValueFlow?.value
+        val defaultValue: Flow<T> = editableCasted.defaultValue
 
-        val mergedFlow: Flow<T?> = if (defaultValueFlow != null) {
-            merge(
-                getFromStorage(entry)
-                    .filter { it != null },
-                defaultValueFlow
-            )
-        } else {
-            getFromStorage(entry)
-        }
-
-        return mergedFlow.stateIn(
-            scope = CoroutineScope(Dispatchers.Default),
-            started = SharingStarted.Lazily,
-            initialValue = initialValue
-        )
+        return isOverriden(entry)
+            .flatMapMerge { overriden ->
+                when (overriden) {
+                    true -> getFromStorage(entry)
+                    else -> defaultValue
+                }
+            }
     }
+
+    private fun isOverriden(entry: TweakEntry<*>): Flow<Boolean> = tweaksDataStore.data
+        .map { preferences -> preferences[buildIsOverridenKey(entry)] ?: OVERRIDEN_DEFAULT_VALUE }
 
     private fun <T> getFromStorage(entry: TweakEntry<T>) =
         tweaksDataStore.data
@@ -91,8 +87,10 @@ class TweaksBusinessLogic @Inject constructor(
         tweaksDataStore.edit {
             if (value != null) {
                 it[buildKey(entry)] = value
+                it[buildIsOverridenKey(entry)] = true
             } else {
                 it.remove(buildKey(entry))
+                it[buildIsOverridenKey(entry)] = false
             }
         }
     }
@@ -105,6 +103,7 @@ class TweaksBusinessLogic @Inject constructor(
     suspend fun <T> clearValue(entry: TweakEntry<T>) {
         tweaksDataStore.edit {
             it.remove(buildKey(entry))
+            it.remove(buildIsOverridenKey(entry))
         }
     }
 
@@ -122,5 +121,12 @@ class TweaksBusinessLogic @Inject constructor(
         is EditableLongTweakEntry -> longPreferencesKey(entry.key) as Preferences.Key<T>
         is ButtonTweakEntry -> throw java.lang.IllegalStateException("Buttons doesn't have keys")
         is RouteButtonTweakEntry -> throw java.lang.IllegalStateException("Buttons doesn't have keys")
+    }
+
+    private fun buildIsOverridenKey(entry: TweakEntry<*>): Preferences.Key<Boolean> =
+        booleanPreferencesKey("${entry.key}.TweakOverriden")
+
+    companion object {
+        private const val OVERRIDEN_DEFAULT_VALUE = false
     }
 }
