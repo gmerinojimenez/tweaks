@@ -8,10 +8,15 @@
 <p align="center">
 <img src="https://user-images.githubusercontent.com/4595241/146578604-32454df7-6c15-456f-9939-7848464600e9.png" width="800" />
 </p>
-# Important
-This project is discontinued. Please use https://github.com/Telefonica/tweaks instead
+
+
+## Important
+**This project is discontinued. Please use https://github.com/Telefonica/tweaks instead**
+
+## Tweaks
 
 A customizable debug screen to view and edit flags that can be used for development in **Jetpack Compose** applications
+
 
 
 
